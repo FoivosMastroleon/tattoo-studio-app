@@ -9,6 +9,7 @@ export interface IAppointment extends Document {
     status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
     clientNotes?: string;
     artistNotes?: string;
+    referenceImageUrl?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -21,6 +22,7 @@ const AppointmentSchema = new Schema<IAppointment>({
     timeSlot: { type: String, required: true },
     clientNotes: { type: String },
     artistNotes: { type: String },
+    referenceImageUrl: { type: String },
     status: { type: String, enum: ['pending', 'confirmed', 'completed', 'cancelled'], default: 'pending' }
 }, { timestamps: true });
 
