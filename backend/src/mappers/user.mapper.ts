@@ -7,7 +7,6 @@ export const toUserDTO = (user: IUser): UserDTO => ({
     email: user.email,
     role: user.role,
     phone: user.phone,
-    address: user.address,
     avatar: user.avatar,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,

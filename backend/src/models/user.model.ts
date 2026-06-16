@@ -7,8 +7,7 @@ export interface IUser extends Document {
   googleId?: string;
   role: 'admin' | 'artist' | 'customer';
   phone?: string;
-  address?: string;
-  avatar?: string;  
+  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -21,7 +20,6 @@ const UserSchema = new Schema<IUser>({
     googleId: { type: String },
     role: { type: String, enum: ['admin', 'artist', 'customer'], default: 'customer' },
     phone: { type: String },
-    address: { type: String },
     avatar: { type: String }
 }, { timestamps: true
     
