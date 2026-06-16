@@ -15,3 +15,7 @@ export const errorMiddleware = (
   console.error(`[${status}] ${message}`);
   res.status(status).json({ message });
 };
+
+export const notFoundMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+    res.status(404).json({ message: `Route ${req.method} ${req.path} not found` });
+};
