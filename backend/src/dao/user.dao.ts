@@ -30,6 +30,6 @@ export const deleteUser = async (id: string) => {
      return await User.findByIdAndDelete(id);
 };
 
-export const restoreUser = async (id: string) => {
-     return await User.findByIdAndUpdate(id, { deleted: false }, { new: true });
-}
+export const findUserByGoogleId = async (googleId: string) => {
+     return await User.findOne({ googleId });
+};
