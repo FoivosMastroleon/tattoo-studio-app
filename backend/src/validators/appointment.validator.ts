@@ -4,10 +4,10 @@ const objectId = z.string().regex(/^[a-fA-F0-9]{24}$/, 'Invalid ID format');
 
 export const createAppointmentSchema = z.object({
     tattooStyle: objectId,
-    appointmentDate: z.coerce.date().refine(date => date > new Date(), {
+    appointmentDate: z.coerce.date({ error: 'Appointment date is required' }).refine(date => date > new Date(), {
         message: 'Appointment date must be in the future',
     }),
-    timeSlot: z.string().regex(/^\d{2}:\d{2}$/, 'Time slot must be in HH:MM format'),
+    timeSlot: z.string({ error: 'Time slot is required' }).regex(/^\d{2}:\d{2}$/, 'Time slot must be in HH:MM format'),
     clientNotes: z.string().max(500).optional(),
     referenceImageUrl: z.string().url('Invalid URL').optional(),
 });

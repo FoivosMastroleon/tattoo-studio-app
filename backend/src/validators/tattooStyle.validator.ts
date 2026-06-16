@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createStyleSchema = z.object({
-    name: z.string().min(1, 'Name is required').max(50),
+    name: z.string({ error: 'Name is required' }).min(1, 'Name is required').max(50),
     description: z.string().max(500).optional(),
     imageUrl: z.string().url('Invalid URL').optional(),
 });
