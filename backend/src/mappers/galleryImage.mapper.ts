@@ -1,11 +1,11 @@
 import { IGalleryImage } from '../models/galleryImage.model';
 import { GalleryImageDTO } from '../dto/galleryImage.dto';
 import { ITattooStyle } from '../models/tattooStyle.model';
-import { TattooStyleDTO } from '../dto/tattooStyle.dto';
 import { IUser } from '../models/user.model';
-import { UserDTO } from '../dto/user.dto';
+import { toUserDTO } from './user.mapper';
+import { toTattooStyleDTO } from './tattooStyle.mapper';
 
-export const toGalleryImageDTO = (galleryImage: IGalleryImage): GalleryImageDTO => ({
+export const toGalleryImageDTO = (galleryImage: IGalleryImage): GalleryImageDTO => {
     const uploadedBy = galleryImage.uploadedBy as unknown as IUser;
     const style = galleryImage.style as unknown as ITattooStyle;
 
@@ -15,7 +15,7 @@ export const toGalleryImageDTO = (galleryImage: IGalleryImage): GalleryImageDTO 
         description: galleryImage.description,
         imageUrl: galleryImage.imageUrl,
         style: style ? toTattooStyleDTO(style) : undefined,
-        uploadedBy: uploadedBy ? toUserDTO(uploadedBy) : undefined,
+        uploadedBy: toUserDTO(uploadedBy),
         createdAt: galleryImage.createdAt,
     };
-});
+};
