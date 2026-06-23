@@ -1,7 +1,7 @@
 import GalleryImage, { IGalleryImage } from '../models/galleryImage.model';
 
 export const findAllGalleryImages = async (): Promise<IGalleryImage[]> => {
-    return GalleryImage.find().populate('style uploadedBy');
+    return GalleryImage.find().sort({ createdAt: -1 }).populate('style uploadedBy');
 };
 
 export const findGalleryImageById = async (id: string) => {
