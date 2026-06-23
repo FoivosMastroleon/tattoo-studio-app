@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getGalleryImages } from '@/api/galleryImage'
-import type { GalleryImage } from '@/types'
+import { getPosts } from '@/api/posts'
+import type { GalleryImage, Post } from '@/types'
 
 const HomePage = () => {
   const [featured, setFeatured] = useState<GalleryImage[]>([])
+  const [latestPosts, setLatestPosts] = useState<Post[]>([])
 
   useEffect(() => {
     getGalleryImages().then(imgs => setFeatured(imgs.slice(0, 3))).catch(() => {})
+    getPosts().then(posts => setLatestPosts(posts.slice(0, 3))).catch(() => {})
   }, [])
 
   return (
@@ -82,6 +85,41 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {latestPosts.length > 0 && (
+        <>
+          <div className="border-t border-[#111]" />
+          <section className="max-w-4xl mx-auto px-6 py-24">
+            <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Studio Updates</p>
+            <h2 className="font-display text-3xl text-center mb-16">Latest News</h2>
+            <div className="flex flex-col gap-px bg-[#111]">
+              {latestPosts.map(post => (
+                <article key={post.id} className="bg-[#0a0a0a]">
+                  {post.imageUrl && (
+                    <div className="aspect-video overflow-hidden">
+                      <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="p-8">
+                    <p className="text-[#c9a84c] text-xs uppercase tracking-widest mb-3">
+                      {new Date(post.createdAt).toLocaleDateString('en-GB', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                      })}
+                    </p>
+                    <h3 className="font-display text-xl text-[#e5e5e5] mb-3">{post.title}</h3>
+                    <p className="text-[#555] text-sm leading-relaxed line-clamp-3">{post.content}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link to="/news" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
+                View All News
+              </Link>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   )
 }

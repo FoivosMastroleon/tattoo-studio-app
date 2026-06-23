@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import * as appointmentDao from '../dao/appointment.dao';
+import * as galleryImageDao from '../dao/galleryImage.dao';
 import { toAppointmentDTO } from '../mappers/appointment.mapper';
 import { CreateAppointmentInput, UpdateAppointmentInput } from '../validators/appointment.validator';
 
@@ -66,11 +67,22 @@ export const cancelAppointment = async (id: string, userId: string, role: string
     return toAppointmentDTO(updated!);
 };
 
-export const completeAppointment = async (id: string) => {
+export const completeAppointment = async (id: string, userId: string) => {
     const appointment = await appointmentDao.findAppointmentById(id);
     if (!appointment) throw new Error('Appointment not found');
     if (appointment.status !== 'confirmed') throw new Error('Only confirmed appointments can be completed');
 
     const updated = await appointmentDao.updateAppointmentById(id, { status: 'completed' });
+
+    if (appointment.referenceImageUrl) {
+        const styleId = (appointment.tattooStyle as any)._id;
+        await galleryImageDao.createGalleryImage({
+            title: `${(appointment.tattooStyle as any).name} — Completed`,
+            imageUrl: appointment.referenceImageUrl,
+            style: styleId,
+            uploadedBy: new Types.ObjectId(userId) as any,
+        });
+    }
+
     return toAppointmentDTO(updated!);
 };

@@ -60,7 +60,7 @@ export const cancelAppointment = async (req: Request<{ id: string }>, res: Respo
 
 export const completeAppointment = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
     try {
-        const appointment = await appointmentService.completeAppointment(req.params.id);
+        const appointment = await appointmentService.completeAppointment(req.params.id, req.user!.userId);
         res.json(appointment);
     } catch (err: unknown) {
         res.status(400).json({ message: err instanceof Error ? err.message : 'Complete failed' });

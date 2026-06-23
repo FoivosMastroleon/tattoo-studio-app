@@ -38,10 +38,10 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <NavLink to="/book" className={linkClass}>Book</NavLink>
-              <NavLink to="/my-appointments" className={linkClass}>Appointments</NavLink>
-              {role === 'admin' && (
-                <NavLink to="/admin" className={linkClass}>Admin</NavLink>
-              )}
+              {role === 'admin'
+                ? <NavLink to="/admin" className={linkClass}>Dashboard</NavLink>
+                : <NavLink to="/my-appointments" className={linkClass}>Appointments</NavLink>
+              }
               <button onClick={handleLogout} className="text-xs uppercase tracking-widest text-[#e5e5e5] hover:text-[#c9a84c] transition-colors">
                 Logout
               </button>
@@ -77,8 +77,10 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <NavLink to="/book" className={linkClass} onClick={() => setMenuOpen(false)}>Book</NavLink>
-              <NavLink to="/my-appointments" className={linkClass} onClick={() => setMenuOpen(false)}>Appointments</NavLink>
-              {role === 'admin' && <NavLink to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Admin</NavLink>}
+              {role === 'admin'
+                ? <NavLink to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Dashboard</NavLink>
+                : <NavLink to="/my-appointments" className={linkClass} onClick={() => setMenuOpen(false)}>Appointments</NavLink>
+              }
               <button onClick={() => { handleLogout(); setMenuOpen(false) }} className="text-left text-xs uppercase tracking-widest text-[#e5e5e5] hover:text-[#c9a84c] transition-colors">
                 Logout
               </button>

@@ -8,7 +8,7 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/', getAppointments);
-router.post('/', requireRole('customer'), createAppointment);
+router.post('/', requireRole('customer', 'admin', 'artist'), createAppointment);
 router.patch('/:id', requireRole('admin', 'artist'), updateAppointment);
 router.patch('/:id/confirm', requireRole('admin', 'artist'), confirmAppointment);
 router.patch('/:id/cancel', requireRole('admin', 'artist', 'customer'), cancelAppointment);
