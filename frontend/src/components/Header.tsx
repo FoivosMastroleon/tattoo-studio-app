@@ -24,8 +24,8 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur border-b border-[#1a1a1a]">
       <div className="max-w-6xl mx-auto px-6 h-16 grid grid-cols-[auto_1fr_auto] items-center gap-8">
 
-        <Link to="/" className="font-display text-lg font-bold text-[#c9a84c] tracking-widest">
-          INK & SOUL
+        <Link to="/" className="flex items-center">
+          <img src="/logo.png" alt="Ink & Soul" className="h-14 w-auto" />
         </Link>
 
         {/* Desktop nav */}
