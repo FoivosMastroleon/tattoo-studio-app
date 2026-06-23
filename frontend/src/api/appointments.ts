@@ -29,4 +29,7 @@ export const completeAppointment = (id: string) =>
   axiosInstance.patch<Appointment>(`/appointments/${id}/complete`).then(r => r.data)
 
 export const getBookedSlots = (month: string): Promise<Record<string, string[]>> =>
-  axiosInstance.get(`/appointments/booked-slots?month=${month}`).then(r => r.data);
+  axiosInstance.get(`/appointments/booked-slots?month=${month}`).then(r => r.data)
+
+export const getPendingCount = (): Promise<{ count: number }> =>
+  axiosInstance.get('/appointments/pending-count').then(r => r.data);

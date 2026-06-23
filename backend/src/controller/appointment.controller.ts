@@ -58,6 +58,15 @@ export const cancelAppointment = async (req: Request<{ id: string }>, res: Respo
     }
 };
 
+export const getPendingCount = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const count = await appointmentService.getPendingCount(req.user!.role, req.user!.userId)
+    res.json({ count })
+  } catch {
+    res.status(500).json({ message: 'Failed to fetch count' })
+  }
+}
+
 export const getBookedSlots = async (req: Request, res: Response): Promise<void> => {
   const { month } = req.query
   if (!month || typeof month !== 'string' || !/^\d{4}-\d{2}$/.test(month)) {

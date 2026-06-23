@@ -1,12 +1,35 @@
-import { useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/AuthProvider'
 import Avatar from '@/components/Avatars'
+import { getPendingCount } from '@/api/appointments'
 
 const Header = () => {
   const { isAuthenticated, role, logoutUser, user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [pendingCount, setPendingCount] = useState(0)
+  const actualCountRef = useRef(0)
+
+  const seenKey = `appt_seen_${user?.id ?? ''}`
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getPendingCount().then(r => {
+        actualCountRef.current = r.count
+        const seen = parseInt(sessionStorage.getItem(seenKey) || '0')
+        setPendingCount(Math.max(0, r.count - seen))
+      }).catch(() => {})
+    } else {
+      setPendingCount(0)
+    }
+  }, [isAuthenticated, role, location.pathname])
+
+  const handleMarkSeen = () => {
+    sessionStorage.setItem(seenKey, String(actualCountRef.current))
+    setPendingCount(0)
+  }
 
   const handleLogout = () => {
     logoutUser()
@@ -34,7 +57,16 @@ const Header = () => {
           {isAdmin ? (
             <>
               <NavLink to="/admin" className={linkClass}>Dashboard</NavLink>
-              <NavLink to="/admin/appointments" className={linkClass}>Appointments</NavLink>
+              <NavLink to="/admin/appointments" className={linkClass} onClick={handleMarkSeen}>
+                <span className="relative">
+                  Appointments
+                  {pendingCount > 0 && (
+                    <span className="absolute -top-2.5 -right-4 min-w-[1.1rem] h-[1.1rem] rounded-full bg-[#c9a84c] text-[#0a0a0a] text-[9px] font-bold flex items-center justify-center px-0.5">
+                      {pendingCount > 99 ? '99+' : pendingCount}
+                    </span>
+                  )}
+                </span>
+              </NavLink>
               <NavLink to="/generate" className={linkClass}>Generate</NavLink>
             </>
           ) : (
@@ -55,7 +87,16 @@ const Header = () => {
                   {role === 'artist' && (
                     <NavLink to="/generate" className={linkClass}>Generate</NavLink>
                   )}
-                  <NavLink to="/my-appointments" className={linkClass}>My Appointments</NavLink>
+                  <NavLink to="/my-appointments" className={linkClass} onClick={handleMarkSeen}>
+                    <span className="relative">
+                      My Appointments
+                      {pendingCount > 0 && (
+                        <span className="absolute -top-2.5 -right-4 min-w-[1.1rem] h-[1.1rem] rounded-full bg-[#c9a84c] text-[#0a0a0a] text-[9px] font-bold flex items-center justify-center px-0.5">
+                          {pendingCount > 99 ? '99+' : pendingCount}
+                        </span>
+                      )}
+                    </span>
+                  </NavLink>
                 </>
               )}
               {user && <Avatar name={user.username} />}
@@ -91,7 +132,16 @@ const Header = () => {
           {isAdmin ? (
             <>
               <NavLink to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Dashboard</NavLink>
-              <NavLink to="/admin/appointments" className={linkClass} onClick={() => setMenuOpen(false)}>Appointments</NavLink>
+              <NavLink to="/admin/appointments" className={linkClass} onClick={() => { handleMarkSeen(); setMenuOpen(false) }}>
+                <span className="relative">
+                  Appointments
+                  {pendingCount > 0 && (
+                    <span className="absolute -top-2.5 -right-4 min-w-[1.1rem] h-[1.1rem] rounded-full bg-[#c9a84c] text-[#0a0a0a] text-[9px] font-bold flex items-center justify-center px-0.5">
+                      {pendingCount > 99 ? '99+' : pendingCount}
+                    </span>
+                  )}
+                </span>
+              </NavLink>
               <NavLink to="/generate" className={linkClass} onClick={() => setMenuOpen(false)}>Generate</NavLink>
             </>
           ) : (
@@ -103,7 +153,16 @@ const Header = () => {
                 <NavLink to="/generate" className={linkClass} onClick={() => setMenuOpen(false)}>Generate</NavLink>
               )}
               {isAuthenticated && (
-                <NavLink to="/my-appointments" className={linkClass} onClick={() => setMenuOpen(false)}>My Appointments</NavLink>
+                <NavLink to="/my-appointments" className={linkClass} onClick={() => { handleMarkSeen(); setMenuOpen(false) }}>
+                  <span className="relative">
+                    My Appointments
+                    {pendingCount > 0 && (
+                      <span className="absolute -top-2.5 -right-4 min-w-[1.1rem] h-[1.1rem] rounded-full bg-[#c9a84c] text-[#0a0a0a] text-[9px] font-bold flex items-center justify-center px-0.5">
+                        {pendingCount > 99 ? '99+' : pendingCount}
+                      </span>
+                    )}
+                  </span>
+                </NavLink>
               )}
             </>
           )}

@@ -31,9 +31,11 @@ const AdminAppointmentsPage = () => {
     updateOne(updated)
   }
 
-  const filtered = filter === 'all'
-    ? appointments
-    : appointments.filter(a => a.status === filter)
+  const STATUS_ORDER: Record<string, number> = { pending: 0, confirmed: 1, cancelled: 2, completed: 3 }
+
+  const filtered = (filter === 'all' ? appointments : appointments.filter(a => a.status === filter))
+    .slice()
+    .sort((a, b) => filter === 'all' ? STATUS_ORDER[a.status] - STATUS_ORDER[b.status] : 0)
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">

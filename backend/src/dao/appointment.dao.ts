@@ -22,6 +22,16 @@ export const updateAppointmentById = (id: string, data: Partial<IAppointment>) =
 export const deleteAppointmentById = (id: string) =>
   Appointment.findByIdAndDelete(id);
 
+export const countNotifications = (role: string, userId: string) => {
+  if (role === 'admin') {
+    return Appointment.countDocuments({ status: 'pending' })
+  } else if (role === 'artist') {
+    return Appointment.countDocuments({ status: 'confirmed', artist: userId })
+  } else {
+    return Appointment.countDocuments({ status: { $in: ['confirmed', 'cancelled'] }, customer: userId })
+  }
+}
+
 export const findBookedSlotsByMonth = (year: number, month: number) => {
   const start = new Date(`${year}-${String(month).padStart(2, '0')}-01`)
   const end = new Date(start)
