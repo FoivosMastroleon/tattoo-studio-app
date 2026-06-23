@@ -10,6 +10,7 @@ export interface AppointmentDTO {
     appointmentDate: Date;
     timeSlot: string;
     status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+    phone?: string;
     clientNotes?: string;
     artistNotes?: string;
     referenceImageUrl?: string;

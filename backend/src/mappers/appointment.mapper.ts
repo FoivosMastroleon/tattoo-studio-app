@@ -21,6 +21,7 @@ export const toAppointmentDTO = (appointment: IAppointment): AppointmentDTO => {
     appointmentDate: appointment.appointmentDate,
     timeSlot: appointment.timeSlot,
     status: appointment.status,
+    phone: appointment.phone,
     clientNotes: appointment.clientNotes,
     artistNotes: appointment.artistNotes,
     referenceImageUrl: appointment.referenceImageUrl,

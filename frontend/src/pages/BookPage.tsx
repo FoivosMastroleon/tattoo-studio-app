@@ -24,7 +24,12 @@ const BookPage = () => {
   const onSubmit = async (data: CreateAppointmentFields) => {
     setError(null)
     try {
-      await createAppointment(data)
+      const payload = {
+        ...data,
+        phone: data.phone || undefined,
+        referenceImageUrl: data.referenceImageUrl || undefined,
+      }
+      await createAppointment(payload)
       setSuccess(true)
       reset()
     } catch (err: any) {
@@ -99,6 +104,19 @@ const BookPage = () => {
             ))}
           </select>
           {errors.timeSlot && <p className="text-red-400 text-xs mt-1">{errors.timeSlot.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">
+            Phone <span className="text-[#333]">(optional)</span>
+          </label>
+          <input
+            {...register('phone')}
+            type="tel"
+            placeholder="+30 69..."
+            className="w-full bg-[#111] border border-[#222] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
+          />
+          {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
         </div>
 
         <div>

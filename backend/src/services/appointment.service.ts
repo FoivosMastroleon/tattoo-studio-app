@@ -22,6 +22,7 @@ export const createAppointment = async (customerId: string, data: CreateAppointm
         tattooStyle: new Types.ObjectId(data.tattooStyle),
         appointmentDate: data.appointmentDate,
         timeSlot: data.timeSlot,
+        phone: data.phone,
         clientNotes: data.clientNotes,
         referenceImageUrl: data.referenceImageUrl,
     });

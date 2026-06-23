@@ -29,6 +29,7 @@ export type Appointment = {
     appointmentDate: string;
     timeSlot: string;
     status: AppointmentStatus;
+    phone?: string;
     clientNotes?: string;
     artistNotes?: string;
     referenceImageUrl?: string;

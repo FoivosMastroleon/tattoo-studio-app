@@ -89,7 +89,7 @@ const DashboardPage = () => {
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <p className="text-[#e5e5e5] text-sm font-medium">{apt.customer.username}</p>
-                  <p className="text-[#555] text-xs mt-0.5">{apt.customer.email}</p>
+                  <p className="text-[#555] text-xs mt-0.5">{apt.customer.email}{apt.phone && ` · ${apt.phone}`}</p>
                   {(apt.status === 'pending' || apt.status === 'confirmed') && artists.length > 0 && (
                     <select
                       value={apt.artist?.id ?? ''}

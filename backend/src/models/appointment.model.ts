@@ -7,6 +7,7 @@ export interface IAppointment extends Document {
     appointmentDate: Date;
     timeSlot: string;
     status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+    phone?: string;
     clientNotes?: string;
     artistNotes?: string;
     referenceImageUrl?: string;
@@ -20,6 +21,7 @@ const AppointmentSchema = new Schema<IAppointment>({
     tattooStyle: { type: Schema.Types.ObjectId, ref: 'TattooStyle', required: true },
     appointmentDate: { type: Date, required: true },
     timeSlot: { type: String, required: true },
+    phone: { type: String },
     clientNotes: { type: String },
     artistNotes: { type: String },
     referenceImageUrl: { type: String },
