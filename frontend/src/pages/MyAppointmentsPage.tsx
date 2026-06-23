@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { cancelAppointment } from '@/api/appointments'
+import { cancelAppointment, completeAppointment } from '@/api/appointments'
 import { useAppointments } from '@/hooks/useAppointments'
+import { useAuth } from '@/context/AuthProvider'
 import { formatDateLong } from '@/utils/formatDate'
 
 const statusStyle: Record<string, string> = {
@@ -12,10 +13,18 @@ const statusStyle: Record<string, string> = {
 
 const MyAppointmentsPage = () => {
   const { appointments, updateOne, loading } = useAppointments()
+  const { role } = useAuth()
+  const isArtist = role === 'artist' || role === 'admin'
 
   const handleCancel = async (id: string) => {
     if (!confirm('Cancel this appointment?')) return
     const updated = await cancelAppointment(id)
+    updateOne(updated)
+  }
+
+  const handleComplete = async (id: string) => {
+    if (!confirm('Mark this appointment as completed?')) return
+    const updated = await completeAppointment(id)
     updateOne(updated)
   }
 
@@ -72,14 +81,24 @@ const MyAppointmentsPage = () => {
                 </div>
               )}
 
-              {(apt.status === 'pending' || apt.status === 'confirmed') && (
-                <button
-                  onClick={() => handleCancel(apt.id)}
-                  className="mt-4 text-xs uppercase tracking-widest text-[#333] hover:text-red-500 transition-colors"
-                >
-                  Cancel
-                </button>
-              )}
+              <div className="flex items-center gap-4 mt-4">
+                {isArtist && apt.status === 'confirmed' && (
+                  <button
+                    onClick={() => handleComplete(apt.id)}
+                    className="text-xs uppercase tracking-widest text-[#c9a84c] hover:text-[#b8973b] transition-colors"
+                  >
+                    Mark Complete
+                  </button>
+                )}
+                {(apt.status === 'pending' || apt.status === 'confirmed') && (
+                  <button
+                    onClick={() => handleCancel(apt.id)}
+                    className="text-xs uppercase tracking-widest text-[#333] hover:text-red-500 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

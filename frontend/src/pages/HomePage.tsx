@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { getGalleryImages } from '@/api/galleryImage'
 import { getPosts } from '@/api/posts'
 import { getTattooStyles } from '@/api/tattooStyles'
+import Carousel from '@/components/Carousel'
 import type { GalleryImage, Post, TattooStyle } from '@/types'
 
 const HomePage = () => {
@@ -12,7 +13,7 @@ const HomePage = () => {
   const [selectedStyle, setSelectedStyle] = useState<TattooStyle | null>(null)
 
   useEffect(() => {
-    getGalleryImages().then(imgs => setFeatured(imgs.slice(0, 3))).catch(() => {})
+    getGalleryImages().then(setFeatured).catch(() => {})
     getPosts().then(posts => setLatestPosts(posts.slice(0, 3))).catch(() => {})
     getTattooStyles().then(setStyles).catch(() => {})
   }, [])
@@ -48,10 +49,10 @@ const HomePage = () => {
 
       {/* Featured work */}
       {featured.length > 0 && (
-        <section className="max-w-6xl mx-auto px-6 py-24">
+        <section className="max-w-6xl mx-auto px-10 py-24">
           <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Work</p>
           <h2 className="font-display text-3xl text-center mb-16">Featured Pieces</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <Carousel>
             {featured.map(img => (
               <div key={img.id} className="aspect-square overflow-hidden group">
                 <img
@@ -61,7 +62,7 @@ const HomePage = () => {
                 />
               </div>
             ))}
-          </div>
+          </Carousel>
           <div className="text-center mt-12">
             <Link to="/gallery" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
               View Full Gallery
@@ -73,10 +74,10 @@ const HomePage = () => {
       {styles.length > 0 && (
         <>
           <div className="border-t border-[#111]" />
-          <section className="max-w-6xl mx-auto px-6 py-24">
+          <section className="max-w-6xl mx-auto px-10 py-24">
             <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">What We Do</p>
             <h2 className="font-display text-3xl text-center mb-16">Our Styles</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <Carousel>
               {styles.map(style => (
                 <div
                   key={style.id}
@@ -93,10 +94,10 @@ const HomePage = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </Carousel>
             <div className="text-center mt-12">
               <Link to="/styles" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
-                Explore All Styles
+                View All Styles
               </Link>
             </div>
           </section>
