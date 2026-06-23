@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAppointments, cancelAppointment } from '@/api/appointments'
-import type { Appointment } from '@/types'
+import { cancelAppointment } from '@/api/appointments'
+import { useAppointments } from '@/hooks/useAppointments'
+import { formatDateLong } from '@/utils/formatDate'
 
 const statusStyle: Record<string, string> = {
   pending:   'text-yellow-500 border-yellow-500/20',
@@ -11,19 +11,12 @@ const statusStyle: Record<string, string> = {
 }
 
 const MyAppointmentsPage = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    getAppointments().then(setAppointments).finally(() => setLoading(false))
-  }, [])
+  const { appointments, updateOne, loading } = useAppointments()
 
   const handleCancel = async (id: string) => {
     if (!confirm('Cancel this appointment?')) return
-    await cancelAppointment(id)
-    setAppointments(prev =>
-      prev.map(a => a.id === id ? { ...a, status: 'cancelled' } : a)
-    )
+    const updated = await cancelAppointment(id)
+    updateOne(updated)
   }
 
   return (
@@ -53,9 +46,7 @@ const MyAppointmentsPage = () => {
                 <div>
                   <p className="font-display text-lg text-[#e5e5e5]">{apt.tattooStyle.name}</p>
                   <p className="text-[#555] text-xs uppercase tracking-widest mt-1">
-                    {new Date(apt.appointmentDate).toLocaleDateString('en-GB', {
-                      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-                    })} — {apt.timeSlot}
+                    {formatDateLong(apt.appointmentDate)} — {apt.timeSlot}
                   </p>
                 </div>
                 <span className={`text-xs uppercase tracking-widest px-3 py-1 border ${statusStyle[apt.status]}`}>

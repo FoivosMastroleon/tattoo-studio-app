@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAppointments, confirmAppointment, cancelAppointment, completeAppointment, updateAppointment } from '@/api/appointments'
+import { confirmAppointment, cancelAppointment, completeAppointment, updateAppointment } from '@/api/appointments'
 import { getUsers } from '@/api/users'
-import type { Appointment, User } from '@/types'
+import { useAppointments } from '@/hooks/useAppointments'
+import { formatDate } from '@/utils/formatDate'
+import type { User } from '@/types'
 
 const statusStyle: Record<string, string> = {
   pending:   'text-yellow-500',
@@ -12,24 +14,22 @@ const statusStyle: Record<string, string> = {
 }
 
 const DashboardPage = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([])
+  const { appointments, updateOne, loading } = useAppointments()
   const [artists, setArtists] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
-    getAppointments().then(setAppointments).finally(() => setLoading(false))
     getUsers().then(users => setArtists(users.filter(u => u.role === 'artist')))
   }, [])
 
-  const update = async (fn: () => Promise<Appointment>, id: string) => {
+  const handle = async (fn: () => Promise<any>) => {
     const updated = await fn()
-    setAppointments(prev => prev.map(a => a.id === id ? updated : a))
+    updateOne(updated)
   }
 
   const handleAssignArtist = async (appointmentId: string, artistId: string) => {
     const updated = await updateAppointment(appointmentId, { artist: artistId || undefined })
-    setAppointments(prev => prev.map(a => a.id === appointmentId ? updated : a))
+    updateOne(updated)
   }
 
   const filtered = filter === 'all'
@@ -106,7 +106,7 @@ const DashboardPage = () => {
                     <p className="text-xs text-[#555] mt-1">Artist: {apt.artist.username}</p>
                   )}
                   <p className="text-[#444] text-xs uppercase tracking-widest mt-1">
-                    {apt.tattooStyle.name} — {new Date(apt.appointmentDate).toLocaleDateString('en-GB')} {apt.timeSlot}
+                    {apt.tattooStyle.name} — {formatDate(apt.appointmentDate)} {apt.timeSlot}
                   </p>
                   {apt.clientNotes && (
                     <p className="text-[#333] text-xs mt-2 italic">"{apt.clientNotes}"</p>
@@ -128,7 +128,7 @@ const DashboardPage = () => {
                   </span>
                   {apt.status === 'pending' && (
                     <button
-                      onClick={() => update(() => confirmAppointment(apt.id), apt.id)}
+                      onClick={() => handle(() => confirmAppointment(apt.id))}
                       className="text-xs uppercase tracking-widest px-3 py-1 border border-green-900 text-green-500 hover:bg-green-900/20 transition-colors"
                     >
                       Confirm
@@ -136,7 +136,7 @@ const DashboardPage = () => {
                   )}
                   {apt.status === 'confirmed' && (
                     <button
-                      onClick={() => update(() => completeAppointment(apt.id), apt.id)}
+                      onClick={() => handle(() => completeAppointment(apt.id))}
                       className="text-xs uppercase tracking-widest px-3 py-1 border border-[#c9a84c]/30 text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
                     >
                       Complete
@@ -144,7 +144,7 @@ const DashboardPage = () => {
                   )}
                   {(apt.status === 'pending' || apt.status === 'confirmed') && (
                     <button
-                      onClick={() => update(() => cancelAppointment(apt.id), apt.id)}
+                      onClick={() => handle(() => cancelAppointment(apt.id))}
                       className="text-xs uppercase tracking-widest px-3 py-1 border border-red-900/50 text-red-500 hover:bg-red-900/20 transition-colors"
                     >
                       Cancel
