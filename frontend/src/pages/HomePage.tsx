@@ -2,15 +2,19 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getGalleryImages } from '@/api/galleryImage'
 import { getPosts } from '@/api/posts'
-import type { GalleryImage, Post } from '@/types'
+import { getTattooStyles } from '@/api/tattooStyles'
+import type { GalleryImage, Post, TattooStyle } from '@/types'
 
 const HomePage = () => {
   const [featured, setFeatured] = useState<GalleryImage[]>([])
   const [latestPosts, setLatestPosts] = useState<Post[]>([])
+  const [styles, setStyles] = useState<TattooStyle[]>([])
+  const [selectedStyle, setSelectedStyle] = useState<TattooStyle | null>(null)
 
   useEffect(() => {
     getGalleryImages().then(imgs => setFeatured(imgs.slice(0, 3))).catch(() => {})
     getPosts().then(posts => setLatestPosts(posts.slice(0, 3))).catch(() => {})
+    getTattooStyles().then(setStyles).catch(() => {})
   }, [])
 
   return (
@@ -66,6 +70,39 @@ const HomePage = () => {
         </section>
       )}
 
+      {styles.length > 0 && (
+        <>
+          <div className="border-t border-[#111]" />
+          <section className="max-w-6xl mx-auto px-6 py-24">
+            <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">What We Do</p>
+            <h2 className="font-display text-3xl text-center mb-16">Our Styles</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              {styles.map(style => (
+                <div
+                  key={style.id}
+                  className="aspect-square overflow-hidden group relative cursor-pointer"
+                  onClick={() => setSelectedStyle(style)}
+                >
+                  <img
+                    src={style.imageUrl}
+                    alt={style.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-[#0a0a0a]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p className="font-display text-xl text-[#e5e5e5]">{style.name}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <Link to="/styles" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
+                Explore All Styles
+              </Link>
+            </div>
+          </section>
+        </>
+      )}
+
       <div className="border-t border-[#111]" />
 
       {/* Stats */}
@@ -119,6 +156,38 @@ const HomePage = () => {
             </div>
           </section>
         </>
+      )}
+      {/* Style modal */}
+      {selectedStyle && (
+        <div
+          className="fixed inset-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-sm flex items-center justify-center px-6"
+          onClick={() => setSelectedStyle(null)}
+        >
+          <div
+            className="bg-[#111] border border-[#1a1a1a] max-w-lg w-full overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="aspect-video overflow-hidden">
+              <img
+                src={selectedStyle.imageUrl}
+                alt={selectedStyle.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-8">
+              <h3 className="font-display text-2xl text-[#e5e5e5] mb-4">{selectedStyle.name}</h3>
+              {selectedStyle.description && (
+                <p className="text-[#555] text-sm leading-relaxed">{selectedStyle.description}</p>
+              )}
+              <button
+                onClick={() => setSelectedStyle(null)}
+                className="mt-8 text-xs uppercase tracking-widest text-[#444] hover:text-[#c9a84c] transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

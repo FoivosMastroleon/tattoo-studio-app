@@ -42,6 +42,7 @@ const AdminStylesPage = () => {
   const startEdit = (style: TattooStyle) => {
     setEditing(style.id)
     setForm({ name: style.name, description: style.description ?? '', imageUrl: style.imageUrl ?? '' })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDelete = async (id: string) => {

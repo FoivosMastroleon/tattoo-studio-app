@@ -42,6 +42,7 @@ const AdminNewsPage = () => {
   const startEdit = (post: Post) => {
     setEditing(post.id)
     setForm({ title: post.title, content: post.content, imageUrl: post.imageUrl ?? '' })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDelete = async (id: string) => {
