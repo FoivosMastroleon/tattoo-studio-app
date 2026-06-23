@@ -4,18 +4,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { getTattooStyles } from '@/api/tattooStyles'
 import { createAppointment } from '@/api/appointments'
 import { createAppointmentSchema, type CreateAppointmentFields } from '@/schemas/appointment'
+import BookingCalendar from '@/components/BookingCalendar'
 import type { TattooStyle } from '@/types'
-
-const TIME_SLOTS = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
 
 const BookPage = () => {
   const [styles, setStyles] = useState<TattooStyle[]>([])
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<CreateAppointmentFields>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<CreateAppointmentFields>({
     resolver: zodResolver(createAppointmentSchema),
   })
+
+  const selectedDate = watch('appointmentDate') ?? ''
+  const selectedTime = watch('timeSlot') ?? ''
 
   useEffect(() => {
     getTattooStyles().then(setStyles).catch(() => {})
@@ -82,27 +84,14 @@ const BookPage = () => {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">Preferred Date</label>
-          <input
-            {...register('appointmentDate')}
-            type="date"
-            min={new Date().toISOString().split('T')[0]}
-            className="w-full bg-[#111] border border-[#222] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
+          <label className="block text-xs uppercase tracking-widest text-[#666] mb-3">Select Date & Time</label>
+          <BookingCalendar
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            onDateChange={date => setValue('appointmentDate', date, { shouldValidate: true })}
+            onTimeChange={time => setValue('timeSlot', time, { shouldValidate: true })}
           />
-          {errors.appointmentDate && <p className="text-red-400 text-xs mt-1">{errors.appointmentDate.message}</p>}
-        </div>
-
-        <div>
-          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">Time Slot</label>
-          <select
-            {...register('timeSlot')}
-            className="w-full bg-[#111] border border-[#222] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
-          >
-            <option value="">Select a time...</option>
-            {TIME_SLOTS.map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
+          {errors.appointmentDate && <p className="text-red-400 text-xs mt-2">{errors.appointmentDate.message}</p>}
           {errors.timeSlot && <p className="text-red-400 text-xs mt-1">{errors.timeSlot.message}</p>}
         </div>
 

@@ -22,3 +22,13 @@ export const updateAppointmentById = (id: string, data: Partial<IAppointment>) =
 export const deleteAppointmentById = (id: string) =>
   Appointment.findByIdAndDelete(id);
 
+export const findBookedSlotsByMonth = (year: number, month: number) => {
+  const start = new Date(`${year}-${String(month).padStart(2, '0')}-01`)
+  const end = new Date(start)
+  end.setUTCMonth(end.getUTCMonth() + 1)
+  return Appointment.find(
+    { appointmentDate: { $gte: start, $lt: end }, status: { $in: ['pending', 'confirmed'] } },
+    { appointmentDate: 1, timeSlot: 1 }
+  ).lean()
+}
+

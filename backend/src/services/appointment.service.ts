@@ -68,6 +68,17 @@ export const cancelAppointment = async (id: string, userId: string, role: string
     return toAppointmentDTO(updated!);
 };
 
+export const getBookedSlotsByMonth = async (year: number, month: number) => {
+  const appointments = await appointmentDao.findBookedSlotsByMonth(year, month)
+  const result: Record<string, string[]> = {}
+  for (const apt of appointments) {
+    const dateStr = (apt.appointmentDate as Date).toISOString().split('T')[0]
+    if (!result[dateStr]) result[dateStr] = []
+    result[dateStr].push(apt.timeSlot)
+  }
+  return result
+}
+
 export const completeAppointment = async (id: string, userId: string) => {
     const appointment = await appointmentDao.findAppointmentById(id);
     if (!appointment) throw new Error('Appointment not found');

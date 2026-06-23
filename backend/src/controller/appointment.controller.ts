@@ -58,6 +58,21 @@ export const cancelAppointment = async (req: Request<{ id: string }>, res: Respo
     }
 };
 
+export const getBookedSlots = async (req: Request, res: Response): Promise<void> => {
+  const { month } = req.query
+  if (!month || typeof month !== 'string' || !/^\d{4}-\d{2}$/.test(month)) {
+    res.status(400).json({ message: 'month parameter required (YYYY-MM)' })
+    return
+  }
+  const [year, m] = month.split('-').map(Number)
+  try {
+    const slots = await appointmentService.getBookedSlotsByMonth(year, m)
+    res.json(slots)
+  } catch {
+    res.status(500).json({ message: 'Failed to fetch availability' })
+  }
+}
+
 export const completeAppointment = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
     try {
         const appointment = await appointmentService.completeAppointment(req.params.id, req.user!.userId);

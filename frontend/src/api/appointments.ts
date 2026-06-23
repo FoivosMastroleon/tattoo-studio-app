@@ -26,4 +26,7 @@ export const cancelAppointment = (id: string) =>
   axiosInstance.patch<Appointment>(`/appointments/${id}/cancel`).then(r => r.data);
 
 export const completeAppointment = (id: string) =>
-  axiosInstance.patch<Appointment>(`/appointments/${id}/complete`).then(r => r.data);
+  axiosInstance.patch<Appointment>(`/appointments/${id}/complete`).then(r => r.data)
+
+export const getBookedSlots = (month: string): Promise<Record<string, string[]>> =>
+  axiosInstance.get(`/appointments/booked-slots?month=${month}`).then(r => r.data);
