@@ -8,7 +8,15 @@ export const getAppointments = () =>
 export const createAppointment = (data: CreateAppointmentFields) =>
   axiosInstance.post<Appointment>('/appointments', data).then(r => r.data);
 
-export const updateAppointment = (id: string, data: Partial<CreateAppointmentFields>) =>
+type UpdateAppointmentData = {
+  artist?: string;
+  tattooStyle?: string;
+  appointmentDate?: string;
+  timeSlot?: string;
+  artistNotes?: string;
+};
+
+export const updateAppointment = (id: string, data: UpdateAppointmentData) =>
   axiosInstance.patch<Appointment>(`/appointments/${id}`, data).then(r => r.data);
 
 export const confirmAppointment = (id: string) =>
