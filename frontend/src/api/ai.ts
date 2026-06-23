@@ -2,17 +2,17 @@ const HF_MODEL = 'https://router.huggingface.co/hf-inference/models/black-forest
 const HF_TOKEN = import.meta.env.VITE_HF_API_TOKEN;
 
 const STYLE_HINTS: Record<string, string> = {
-  japanese:      'traditional Japanese irezumi, bold outlines, koi fish, dragons, waves, cherry blossoms, ukiyo-e',
+  japanese:      'sumi-e ink technique, dynamic composition, wind bars, complementary background elements, traditional Japanese irezumi, bold outlines, koi fish, dragons, waves, cherry blossoms, ukiyo-e',
   traditional:   'American traditional tattoo, bold black outlines, limited color palette, classic flash art',
   blackwork:     'blackwork tattoo, solid black ink, bold fills, no color, high contrast',
-  geometric:     'geometric tattoo, precise lines, sacred geometry, mandala, symmetrical patterns, dotwork',
+  geometric:     'ruler-precise linework, compass-drawn circles, perfect symmetry, architectural accuracy, geometric tattoo, precise lines, sacred geometry, mandala, symmetrical patterns, dotwork',
   watercolor:    'watercolor tattoo, flowing paint splashes, soft edges, vibrant colors, no outlines',
-  realistic:       'photorealistic tattoo, detailed shading, high detail, portrait style, lifelike',
+  realistic:      'hyperrealism, fine shading, gradient grayscale tones, skin texture, photographic quality, photorealistic tattoo, detailed shading, high detail, portrait style, lifelike',
   neotraditional:'neo-traditional tattoo, bold outlines, vibrant colors, art nouveau influence, detailed',
   minimalist:    'minimalist fine line tattoo, single needle, thin lines, simple elegant, small',
   tribal:        'tribal tattoo, bold geometric patterns, solid black, traditional tribal motifs',
-  dotwork:       'dotwork tattoo, stippling technique, dots shading, intricate dot patterns',
-  cartoon:       'cartoon tattoo, bold outlines, flat colors, comic book style, fun illustration, playful design',
+  dotwork:       'hand-poked aesthetic, gradient through density, no solid fills, intricate micro-dots,dotwork tattoo, stippling technique, dots shading, intricate dot patterns',
+  cartoon:       'cartoon tattoo, bold black outlines, flat cel-shaded colors, comic book panel style, exaggerated proportions, fun illustration, pop art influence, clean vector-like linework, playful design',
 }
 
 function getStyleDescriptor(style: string): string {
