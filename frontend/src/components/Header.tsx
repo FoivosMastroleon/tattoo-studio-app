@@ -42,6 +42,9 @@ const Header = () => {
                 ? <NavLink to="/admin" className={linkClass}>Dashboard</NavLink>
                 : <NavLink to="/my-appointments" className={linkClass}>My Appointments</NavLink>
               }
+              {(role === 'admin' || role === 'artist') && (
+                <NavLink to="/generate" className={linkClass}>Generate</NavLink>
+              )}
               {user && <Avatar name={user.username} />}
               <button onClick={handleLogout} className="text-xs uppercase tracking-widest text-[#e5e5e5] hover:text-[#c9a84c] transition-colors">
                 Logout
@@ -82,6 +85,9 @@ const Header = () => {
                 ? <NavLink to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Dashboard</NavLink>
                 : <NavLink to="/my-appointments" className={linkClass} onClick={() => setMenuOpen(false)}>My Appointments</NavLink>
               }
+              {(role === 'admin' || role === 'artist') && (
+                <NavLink to="/generate" className={linkClass} onClick={() => setMenuOpen(false)}>Generate</NavLink>
+              )}
               {user && (
                 <div className="flex items-center gap-2">
                   <Avatar name={user.username} />

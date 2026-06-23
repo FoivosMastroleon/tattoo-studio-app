@@ -14,6 +14,7 @@ import AdminGalleryPage from '@/pages/admin/AdminGalleryPage'
 import AdminNewsPage from '@/pages/admin/AdminNewsPage'
 import AdminStylesPage from '@/pages/admin/AdminStylesPage'
 import AdminUsersPage from '@/pages/admin/AdminUsersPage'
+import GeneratePage from '@/pages/GeneratePage'
 
 function App() {
   return (
@@ -30,6 +31,10 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['customer', 'admin', 'artist']} />}>
           <Route path="/book" element={<BookPage />} />
           <Route path="/my-appointments" element={<MyAppointmentsPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['admin', 'artist']} />}>
+          <Route path="/generate" element={<GeneratePage />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
