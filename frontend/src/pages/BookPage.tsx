@@ -14,6 +14,14 @@ const BookPage = () => {
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<CreateAppointmentFields>({
     resolver: zodResolver(createAppointmentSchema),
+    defaultValues: {
+      tattooStyle: '',
+      appointmentDate: '',
+      timeSlot: '',
+      phone: '',
+      referenceImageUrl: '',
+      clientNotes: '',
+    },
   })
 
   const selectedDate = watch('appointmentDate') ?? ''
