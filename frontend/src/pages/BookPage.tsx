@@ -34,12 +34,7 @@ const BookPage = () => {
   const onSubmit = async (data: CreateAppointmentFields) => {
     setError(null)
     try {
-      const payload = {
-        ...data,
-        phone: data.phone || undefined,
-        referenceImageUrl: data.referenceImageUrl || undefined,
-      }
-      await createAppointment(payload)
+      await createAppointment(data)
       setSuccess(true)
       reset()
     } catch (err: any) {
