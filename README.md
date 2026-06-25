@@ -1,6 +1,12 @@
 # Tattoo Studio App
 
-Full-stack web application for a tattoo studio, built as a final project for Coding Factory 10 (Athens University of Economics and Business).
+Full-stack web application for a tattoo studio, built as a final project for Coding Factory 9 (Athens University of Economics and Business).
+
+## Live Demo
+
+- **Frontend:** https://tattoo-studio-frontend.onrender.com
+- **Backend API:** https://tattoo-studio-backend.onrender.com/api
+- **Swagger Docs:** https://tattoo-studio-backend.onrender.com/api/docs
 
 ## Tech Stack
 
