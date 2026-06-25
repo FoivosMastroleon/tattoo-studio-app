@@ -61,7 +61,7 @@ export const cancelAppointment = async (id: string, userId: string, role: string
     if (role === 'customer') {
         const customerId = String((appointment.customer as any)._id);
         if (customerId !== userId) throw new Error('Forbidden');
-        if (appointment.status !== 'pending') throw new Error('Customers can only cancel pending appointments');
+        if (appointment.status !== 'pending' && appointment.status !== 'confirmed') throw new Error('Cannot cancel this appointment');
     }
 
     const updated = await appointmentDao.updateAppointmentById(id, { status: 'cancelled' });

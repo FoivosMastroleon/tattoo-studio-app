@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cancelAppointment, completeAppointment } from '@/api/appointments'
 import { useAppointments } from '@/hooks/useAppointments'
 import { useAuth } from '@/context/AuthProvider'
-import { formatDate } from '@/utils/formatDate'
+import { formatDate, formatDateTime } from '@/utils/formatDate'
 
 const statusStyle: Record<string, string> = {
   pending:   'text-yellow-500',
@@ -12,31 +12,49 @@ const statusStyle: Record<string, string> = {
   cancelled: 'text-[#333]',
 }
 
-const STATUS_ORDER_CUSTOMER: Record<string, number> = { cancelled: 0, pending: 1, confirmed: 2, completed: 3 }
-const STATUS_ORDER_STAFF: Record<string, number>    = { pending: 0, confirmed: 1, cancelled: 2, completed: 3 }
 
 const MyAppointmentsPage = () => {
   const { appointments, updateOne, loading } = useAppointments()
-  const { role } = useAuth()
+  const { role, user } = useAuth()
   const isArtist = role === 'artist' || role === 'admin'
   const [filter, setFilter] = useState('all')
 
+  const seenAtKey = `appt_seen_at_${user?.id ?? ''}`
+  const [seenAt] = useState<number>(() => parseInt(sessionStorage.getItem(seenAtKey) || '0'))
+  useEffect(() => { sessionStorage.setItem(seenAtKey, String(Date.now())) }, [seenAtKey])
+  const isNew = (updatedAt: string) => new Date(updatedAt).getTime() > seenAt
+
   const handleCancel = async (id: string) => {
     if (!confirm('Cancel this appointment?')) return
-    const updated = await cancelAppointment(id)
-    updateOne(updated)
+    try {
+      const updated = await cancelAppointment(id)
+      updateOne(updated)
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Failed to cancel appointment')
+    }
   }
 
   const handleComplete = async (id: string) => {
     if (!confirm('Mark this appointment as completed?')) return
-    const updated = await completeAppointment(id)
-    updateOne(updated)
+    try {
+      const updated = await completeAppointment(id)
+      updateOne(updated)
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Failed to complete appointment')
+    }
   }
 
-  const statusOrder = role === 'customer' ? STATUS_ORDER_CUSTOMER : STATUS_ORDER_STAFF
+  const CUSTOMER_STATUS_ORDER: Record<string, number> = { confirmed: 0, pending: 1, cancelled: 2, completed: 3 }
+
   const filtered = (filter === 'all' ? appointments : appointments.filter(a => a.status === filter))
     .slice()
-    .sort((a, b) => filter === 'all' ? statusOrder[a.status] - statusOrder[b.status] : 0)
+    .sort((a, b) => {
+      if (role === 'customer' && filter === 'all') {
+        const diff = CUSTOMER_STATUS_ORDER[a.status] - CUSTOMER_STATUS_ORDER[b.status]
+        if (diff !== 0) return diff
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
@@ -80,7 +98,7 @@ const MyAppointmentsPage = () => {
           ) : (
             <div className="flex flex-col gap-px bg-[#111]">
               {filtered.map(apt => (
-                <div key={apt.id} className="bg-[#0a0a0a] p-5">
+                <div key={apt.id} className={`bg-[#0a0a0a] p-5 border-l-2 ${isNew(apt.updatedAt) ? 'border-[#c9a84c]' : 'border-transparent'}`}>
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div className="flex-1 min-w-0">
                       <p className="font-display text-lg text-[#e5e5e5]">{apt.tattooStyle.name}</p>
@@ -106,6 +124,7 @@ const MyAppointmentsPage = () => {
                           View Reference →
                         </a>
                       )}
+                      <p className="text-[#2a2a2a] text-xs mt-3">Booked {formatDateTime(apt.createdAt)}</p>
                     </div>
 
                     <div className="flex flex-col items-end gap-3 shrink-0">

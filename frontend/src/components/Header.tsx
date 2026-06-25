@@ -11,7 +11,6 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
   const actualCountRef = useRef(0)
-
   const seenKey = `appt_seen_${user?.id ?? ''}`
 
   useEffect(() => {

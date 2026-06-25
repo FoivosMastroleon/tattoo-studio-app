@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { confirmAppointment, cancelAppointment, completeAppointment, updateAppointment } from '@/api/appointments'
 import { getUsers } from '@/api/users'
 import { useAppointments } from '@/hooks/useAppointments'
-import { formatDate } from '@/utils/formatDate'
+import { useAuth } from '@/context/AuthProvider'
+import { formatDate, formatDateTime } from '@/utils/formatDate'
 import type { User } from '@/types'
 
 const statusStyle: Record<string, string> = {
@@ -14,12 +15,19 @@ const statusStyle: Record<string, string> = {
 
 const AdminAppointmentsPage = () => {
   const { appointments, updateOne, loading } = useAppointments()
+  const { user } = useAuth()
   const [artists, setArtists] = useState<User[]>([])
   const [filter, setFilter] = useState('all')
+
+  const seenAtKey = `appt_seen_at_${user?.id ?? ''}`
+  const [seenAt] = useState<number>(() => parseInt(sessionStorage.getItem(seenAtKey) || '0'))
+  const isNew = (updatedAt: string) => new Date(updatedAt).getTime() > seenAt
 
   useEffect(() => {
     getUsers().then(users => setArtists(users.filter(u => u.role === 'artist')))
   }, [])
+
+  useEffect(() => { sessionStorage.setItem(seenAtKey, String(Date.now())) }, [seenAtKey])
 
   const handle = async (fn: () => Promise<any>) => {
     const updated = await fn()
@@ -31,11 +39,9 @@ const AdminAppointmentsPage = () => {
     updateOne(updated)
   }
 
-  const STATUS_ORDER: Record<string, number> = { pending: 0, confirmed: 1, cancelled: 2, completed: 3 }
-
   const filtered = (filter === 'all' ? appointments : appointments.filter(a => a.status === filter))
     .slice()
-    .sort((a, b) => filter === 'all' ? STATUS_ORDER[a.status] - STATUS_ORDER[b.status] : 0)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">
@@ -67,7 +73,7 @@ const AdminAppointmentsPage = () => {
       ) : (
         <div className="flex flex-col gap-px bg-[#111]">
           {filtered.map(apt => (
-            <div key={apt.id} className="bg-[#0a0a0a] p-5">
+            <div key={apt.id} className={`bg-[#0a0a0a] p-5 border-l-2 ${isNew(apt.updatedAt) ? 'border-[#c9a84c]' : 'border-transparent'}`}>
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <p className="text-[#e5e5e5] text-sm font-medium">{apt.customer.username}</p>
@@ -103,6 +109,7 @@ const AdminAppointmentsPage = () => {
                       View Reference →
                     </a>
                   )}
+                  <p className="text-[#2a2a2a] text-xs mt-3">Booked {formatDateTime(apt.createdAt)}</p>
                 </div>
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className={`text-xs uppercase tracking-widest ${statusStyle[apt.status]}`}>

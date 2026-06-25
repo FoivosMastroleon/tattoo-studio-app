@@ -24,11 +24,11 @@ export const deleteAppointmentById = (id: string) =>
 
 export const countNotifications = (role: string, userId: string) => {
   if (role === 'admin') {
-    return Appointment.countDocuments({ status: 'pending' })
+    return Appointment.countDocuments({ status: { $in: ['pending', 'cancelled'] } })
   } else if (role === 'artist') {
-    return Appointment.countDocuments({ status: 'confirmed', artist: userId })
+    return Appointment.countDocuments({ artist: userId, status: { $in: ['confirmed', 'cancelled'] } })
   } else {
-    return Appointment.countDocuments({ status: { $in: ['confirmed', 'cancelled'] }, customer: userId })
+    return Appointment.countDocuments({ customer: userId, status: { $in: ['confirmed', 'cancelled'] } })
   }
 }
 
