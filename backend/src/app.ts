@@ -32,7 +32,11 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use(morgan('combined', {
+const morganFormat = process.env.NODE_ENV === 'production'
+  ? 'combined'
+  : ':method :url :status :response-time ms';
+
+app.use(morgan(morganFormat, {
   stream: { write: (msg) => logger.http(msg.trim()) },
   skip: () => process.env.NODE_ENV === 'test',
 }));
