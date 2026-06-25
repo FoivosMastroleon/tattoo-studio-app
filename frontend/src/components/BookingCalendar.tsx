@@ -48,7 +48,7 @@ const BookingCalendar = ({ selectedDate, selectedTime, onDateChange, onTimeChang
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ]
 
-  const isPast = (day: number) => new Date(viewYear, viewMonth, day) < today
+  const isPast = (day: number) => new Date(viewYear, viewMonth, day) <= today
   const isSunday = (day: number) => new Date(viewYear, viewMonth, day).getDay() === 0
   const isFullyBooked = (day: number) =>
     (bookedMap[toDateStr(viewYear, viewMonth, day)] ?? []).length >= TIME_SLOTS.length

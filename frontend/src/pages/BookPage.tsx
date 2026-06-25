@@ -35,7 +35,7 @@ const BookPage = () => {
       setSuccess(true)
       reset()
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Something went wrong')
+      setError(err?.message ?? 'Something went wrong')
     }
   }
 
