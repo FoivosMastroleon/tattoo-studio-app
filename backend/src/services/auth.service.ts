@@ -42,8 +42,13 @@ export const googleLogin = async (idToken: string) => {
                 avatar: payload.picture,
             });
         } else {
+            let username = payload.name || payload.email.split('@')[0];
+            const takenUsername = await userDao.findUserByUsername(username);
+            if (takenUsername) {
+                username = `${payload.email.split('@')[0]}_${Date.now().toString().slice(-4)}`;
+            }
             user = await userDao.createUser({
-                username: payload.name,
+                username,
                 email: payload.email,
                 googleId: payload.sub,
                 avatar: payload.picture,

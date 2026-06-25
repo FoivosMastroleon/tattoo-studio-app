@@ -96,9 +96,7 @@ const BookPage = () => {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">
-            Phone <span className="text-[#333]">(optional)</span>
-          </label>
+          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">Phone</label>
           <input
             {...register('phone')}
             type="tel"
@@ -109,9 +107,7 @@ const BookPage = () => {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">
-            Reference Image URL <span className="text-[#333]">(optional)</span>
-          </label>
+          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">Reference Image URL</label>
           <input
             {...register('referenceImageUrl')}
             type="url"

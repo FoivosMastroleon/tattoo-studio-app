@@ -8,9 +8,9 @@ export const createAppointmentSchema = z.object({
         message: 'Appointment date must be in the future',
     }),
     timeSlot: z.string({ error: 'Time slot is required' }).regex(/^\d{2}:\d{2}$/, 'Time slot must be in HH:MM format'),
-    phone: z.string().regex(/^\+?[\d\s\-()\d]{7,15}$/, { message: 'Invalid phone number' }).optional(),
+    phone: z.string().min(1, 'Phone number is required').regex(/^\+?[\d\s\-()\d]{7,15}$/, { message: 'Invalid phone number' }),
     clientNotes: z.string().max(500).optional(),
-    referenceImageUrl: z.string().url('Invalid URL').optional(),
+    referenceImageUrl: z.string().min(1, 'Reference image URL is required').regex(/^https?:\/\/.+\..+/, { message: 'Please enter a valid URL (https://...)' }),
 });
 
 export const updateAppointmentSchema = z.object({

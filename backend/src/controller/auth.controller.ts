@@ -32,7 +32,8 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
         const result = await authService.googleLogin(parsed.data.idToken);
         res.json(result);
     } catch (err) {
-        next(new AppError(err instanceof Error ? err.message : 'Google auth failed', 400));
+        const isMongoError = err instanceof Error && (err as any).code === 11000;
+        next(new AppError(isMongoError ? 'Account already exists with this email' : 'Google auth failed', 400));
     }
 };
 
