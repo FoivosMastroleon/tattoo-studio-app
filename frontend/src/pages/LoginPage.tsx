@@ -4,9 +4,10 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { loginSchema, type LoginFields } from '@/schemas/auth'
 import { useAuth } from '@/context/AuthProvider'
 import { useState } from 'react'
+import { GoogleLogin } from '@react-oauth/google'
 
 const LoginPage = () => {
-  const { loginUser } = useAuth()
+  const { loginUser, googleLoginUser } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/'
@@ -21,8 +22,18 @@ const LoginPage = () => {
     try {
       await loginUser(data)
       navigate(from, { replace: true })
-    } catch {
-      setError('Invalid email or password')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign in failed')
+    }
+  }
+
+  const handleGoogleSuccess = async (credential: string) => {
+    setError(null)
+    try {
+      await googleLoginUser(credential)
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google sign in failed')
     }
   }
 
@@ -65,6 +76,24 @@ const LoginPage = () => {
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+
+        <div className="flex items-center gap-4 my-8">
+          <div className="flex-1 h-px bg-[#222]" />
+          <span className="text-xs text-[#444] uppercase tracking-widest">or</span>
+          <div className="flex-1 h-px bg-[#222]" />
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={(res) => {
+              if (res.credential) handleGoogleSuccess(res.credential)
+            }}
+            onError={() => setError('Google sign in failed')}
+            theme="filled_black"
+            size="large"
+            width="400"
+          />
+        </div>
 
         <p className="text-center text-xs text-[#555] mt-8 uppercase tracking-widest">
           No account?{' '}
