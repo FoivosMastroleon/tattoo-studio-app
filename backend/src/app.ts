@@ -1,7 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middleware';
+import { swaggerSpec } from './swagger';
+import logger from './utils/logger';
 
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
@@ -17,8 +20,13 @@ const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173')
   .map((o) => o.trim());
 
 app.use(cors({ origin: allowedOrigins, credentials: true }));
-app.use(morgan('dev'));
+app.use(morgan('combined', {
+  stream: { write: (msg) => logger.http(msg.trim()) },
+  skip: () => process.env.NODE_ENV === 'test',
+}));
 app.use(express.json());
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

@@ -1,40 +1,41 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as styleService from '../services/tattooStyle.service';
 import { createStyleSchema, updateStyleSchema } from '../validators/tattooStyle.validator';
+import { AppError } from '../utils/AppError';
 
-export const getAllStyles = async (_req: Request, res: Response): Promise<void> => {
+export const getAllStyles = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         res.json(await styleService.getAllStyles());
-    } catch {
-        res.status(500).json({ message: 'Failed to fetch styles' });
+    } catch (err) {
+        next(new AppError(err instanceof Error ? err.message : 'Failed to fetch styles', 500));
     }
 };
 
-export const createStyle = async (req: Request, res: Response): Promise<void> => {
+export const createStyle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const parsed = createStyleSchema.safeParse(req.body);
-    if (!parsed.success) { res.status(400).json({ message: parsed.error.issues[0].message }); return; }
+    if (!parsed.success) { next(new AppError(parsed.error.issues[0].message, 400)); return; }
     try {
         res.status(201).json(await styleService.createStyle(parsed.data));
-    } catch (err: unknown) {
-        res.status(409).json({ message: err instanceof Error ? err.message : 'Failed to create style' });
+    } catch (err) {
+        next(new AppError(err instanceof Error ? err.message : 'Failed to create style', 409));
     }
 };
 
-export const updateStyle = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+export const updateStyle = async (req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> => {
     const parsed = updateStyleSchema.safeParse(req.body);
-    if (!parsed.success) { res.status(400).json({ message: parsed.error.issues[0].message }); return; }
+    if (!parsed.success) { next(new AppError(parsed.error.issues[0].message, 400)); return; }
     try {
         res.json(await styleService.updateStyle(req.params.id, parsed.data));
-    } catch (err: unknown) {
-        res.status(404).json({ message: err instanceof Error ? err.message : 'Style not found' });
+    } catch (err) {
+        next(new AppError(err instanceof Error ? err.message : 'Style not found', 404));
     }
 };
 
-export const deleteStyle = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+export const deleteStyle = async (req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> => {
     try {
         await styleService.deleteStyle(req.params.id);
         res.status(204).send();
-    } catch (err: unknown) {
-        res.status(404).json({ message: err instanceof Error ? err.message : 'Style not found' });
+    } catch (err) {
+        next(new AppError(err instanceof Error ? err.message : 'Style not found', 404));
     }
 };
