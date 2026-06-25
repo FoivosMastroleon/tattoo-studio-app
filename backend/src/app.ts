@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middleware';
 import { swaggerSpec } from './swagger';
@@ -19,7 +21,17 @@ const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173')
   .split(',')
   .map((o) => o.trim());
 
+app.use(helmet());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { message: 'Too many attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(morgan('combined', {
   stream: { write: (msg) => logger.http(msg.trim()) },
   skip: () => process.env.NODE_ENV === 'test',
@@ -28,7 +40,7 @@ app.use(express.json());
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/gallery', galleryRoutes);
