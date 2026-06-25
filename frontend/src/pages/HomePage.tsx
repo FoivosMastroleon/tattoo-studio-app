@@ -32,17 +32,18 @@ const HomePage = () => {
         <div className="flex gap-4 flex-wrap justify-center">
           <Link
             to="/book"
-            className="px-8 py-4 bg-[#c9a84c] text-[#0a0a0a] text-xs uppercase tracking-widest font-medium hover:bg-[#b8973b] transition-colors"
+            className="w-48 py-4 text-center bg-[#c9a84c] text-[#0a0a0a] text-xs uppercase tracking-widest font-medium hover:bg-[#b8973b] transition-colors"
           >
             Book a Session
           </Link>
           <Link
             to="/gallery"
-            className="px-8 py-4 border border-[#2a2a2a] text-xs uppercase tracking-widest hover:border-[#c9a84c] hover:text-[#c9a84c] transition-colors"
+            className="w-48 py-4 text-center border border-[#2a2a2a] text-xs uppercase tracking-widest hover:border-[#c9a84c] hover:text-[#c9a84c] transition-colors"
           >
             View Gallery
           </Link>
         </div>
+
       </section>
 
       <div className="border-t border-[#111]" />
@@ -104,26 +105,6 @@ const HomePage = () => {
         </>
       )}
 
-      <div className="border-t border-[#111]" />
-
-      {/* Stats */}
-      <section className="py-24">
-        <div className="max-w-4xl mx-auto px-6 grid grid-cols-3 gap-8 text-center">
-          <div>
-            <p className="font-display text-4xl text-[#c9a84c] mb-2">10+</p>
-            <p className="text-xs uppercase tracking-widest text-[#444]">Years of Experience</p>
-          </div>
-          <div>
-            <p className="font-display text-4xl text-[#c9a84c] mb-2">500+</p>
-            <p className="text-xs uppercase tracking-widest text-[#444]">Satisfied Clients</p>
-          </div>
-          <div>
-            <p className="font-display text-4xl text-[#c9a84c] mb-2">12+</p>
-            <p className="text-xs uppercase tracking-widest text-[#444]">Tattoo Styles</p>
-          </div>
-        </div>
-      </section>
-
       {latestPosts.length > 0 && (
         <>
           <div className="border-t border-[#111]" />
@@ -138,7 +119,7 @@ const HomePage = () => {
                       <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
                     </div>
                   )}
-                  <div className="p-8">
+                  <div className="pt-6 pb-8 pr-8">
                     <p className="text-[#c9a84c] text-xs uppercase tracking-widest mb-3">
                       {new Date(post.createdAt).toLocaleDateString('en-GB', {
                         day: 'numeric', month: 'long', year: 'numeric'
@@ -158,6 +139,25 @@ const HomePage = () => {
           </section>
         </>
       )}
+      {/* Stats */}
+      <div className="border-t border-[#111]" />
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-6 grid grid-cols-3 gap-8 text-center">
+          <div>
+            <p className="font-display text-4xl text-[#c9a84c] mb-2">10+</p>
+            <p className="text-xs uppercase tracking-widest text-[#444]">Years of Experience</p>
+          </div>
+          <div>
+            <p className="font-display text-4xl text-[#c9a84c] mb-2">500+</p>
+            <p className="text-xs uppercase tracking-widest text-[#444]">Satisfied Clients</p>
+          </div>
+          <div>
+            <p className="font-display text-4xl text-[#c9a84c] mb-2">12+</p>
+            <p className="text-xs uppercase tracking-widest text-[#444]">Tattoo Styles</p>
+          </div>
+        </div>
+      </section>
+
       {/* Style modal */}
       {selectedStyle && (
         <div
@@ -182,7 +182,7 @@ const HomePage = () => {
               )}
               <button
                 onClick={() => setSelectedStyle(null)}
-                className="mt-8 text-xs uppercase tracking-widest text-[#444] hover:text-[#c9a84c] transition-colors"
+                className="mt-8 text-xs uppercase tracking-widest text-[#c9a84c] hover:text-[#e5c97a] transition-colors cursor-pointer"
               >
                 Close
               </button>
