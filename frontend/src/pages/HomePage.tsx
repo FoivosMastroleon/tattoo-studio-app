@@ -29,19 +29,22 @@ const HomePage = () => {
         <p className="text-[#555] text-base mb-12 max-w-md mx-auto leading-relaxed">
           Custom tattoo artwork crafted with precision and passion.<br />Every piece tells your story.
         </p>
-        <div className="flex gap-4 flex-wrap justify-center">
-          <Link
-            to="/book"
-            className="w-48 py-4 text-center bg-[#c9a84c] text-[#0a0a0a] text-xs uppercase tracking-widest font-medium hover:bg-[#b8973b] transition-colors"
-          >
-            Book a Session
-          </Link>
-          <Link
-            to="/gallery"
-            className="w-48 py-4 text-center border border-[#2a2a2a] text-xs uppercase tracking-widest hover:border-[#c9a84c] hover:text-[#c9a84c] transition-colors"
-          >
-            View Gallery
-          </Link>
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex gap-4 flex-wrap justify-center">
+            <Link
+              to="/book"
+              className="w-48 py-4 text-center bg-[#c9a84c] text-[#0a0a0a] text-xs uppercase tracking-widest font-medium hover:bg-[#b8973b] transition-colors"
+            >
+              Book a Session
+            </Link>
+            <Link
+              to="/gallery"
+              className="w-48 py-4 text-center border border-[#2a2a2a] text-xs uppercase tracking-widest hover:border-[#c9a84c] hover:text-[#c9a84c] transition-colors"
+            >
+              View Gallery
+            </Link>
+          </div>
+          <p className="text-[#555] text-[10px] uppercase tracking-widest">25% off for registered users</p>
         </div>
 
       </section>
