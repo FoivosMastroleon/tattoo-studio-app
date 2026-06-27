@@ -3,6 +3,7 @@ import * as appointmentDao from '../dao/appointment.dao';
 import * as galleryImageDao from '../dao/galleryImage.dao';
 import { toAppointmentDTO } from '../mappers/appointment.mapper';
 import { CreateAppointmentInput, UpdateAppointmentInput } from '../validators/appointment.validator';
+import { sendNewBookingEmailToAdmin, sendConfirmationEmailToCustomer } from '../utils/mailer';
 
 export const getAllAppointments = async (userId: string, role: string) => {
     let appointments;
@@ -28,7 +29,9 @@ export const createAppointment = async (customerId: string, data: CreateAppointm
     });
     const populated = await appointmentDao.findAppointmentById(String(created._id));
     if (!populated) throw new Error('Failed to create appointment');
-    return toAppointmentDTO(populated);
+    const dto = toAppointmentDTO(populated);
+    sendNewBookingEmailToAdmin(dto).catch(() => {});
+    return dto;
 };
 
 export const updateAppointment = async (id: string, data: UpdateAppointmentInput) => {
@@ -50,7 +53,9 @@ export const confirmAppointment = async (id: string) => {
     if (appointment.status !== 'pending') throw new Error('Only pending appointments can be confirmed');
 
     const updated = await appointmentDao.updateAppointmentById(id, { status: 'confirmed' });
-    return toAppointmentDTO(updated!);
+    const dto = toAppointmentDTO(updated!);
+    sendConfirmationEmailToCustomer(dto).catch(() => {});
+    return dto;
 };
 
 export const cancelAppointment = async (id: string, userId: string, role: string) => {

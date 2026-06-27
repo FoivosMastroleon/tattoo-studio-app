@@ -10,8 +10,11 @@ const signToken = (userId: string, role: string) =>
     jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: '7d' });
 
 export const register = async (username: string, email: string, password: string) => {
-    const existing = await userDao.findUserByEmail(email);
-    if (existing) throw new Error('Email already in use');
+    const existingEmail = await userDao.findUserByEmail(email);
+    if (existingEmail) throw new Error('Email already in use');
+
+    const existingUsername = await userDao.findUserByUsername(username);
+    if (existingUsername) throw new Error('Username already taken');
 
     const hashed = await bcrypt.hash(password, 10);
     const user = await userDao.createUser({ username, email, password: hashed });
