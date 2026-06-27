@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getGalleryImages, createGalleryImage, deleteGalleryImage } from '@/api/galleryImage'
 import { getTattooStyles } from '@/api/tattooStyles'
+import ImageUploadInput from '@/components/ImageUploadInput'
 import type { GalleryImage, TattooStyle } from '@/types'
 
 const AdminGalleryPage = () => {
@@ -60,18 +61,6 @@ const AdminGalleryPage = () => {
             placeholder="Title *"
             className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
           />
-          <input
-            value={form.imageUrl}
-            onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))}
-            placeholder="Image URL *"
-            className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
-          />
-          <input
-            value={form.description}
-            onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-            placeholder="Description (optional)"
-            className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
-          />
           <select
             value={form.style}
             onChange={e => setForm(f => ({ ...f, style: e.target.value }))}
@@ -80,6 +69,20 @@ const AdminGalleryPage = () => {
             <option value="">No style</option>
             {styles.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
+          <input
+            value={form.description}
+            onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+            placeholder="Description (optional)"
+            className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
+          />
+          <div className="md:col-span-2">
+            <ImageUploadInput
+              label="Image *"
+              required
+              value={form.imageUrl}
+              onChange={url => setForm(f => ({ ...f, imageUrl: url }))}
+            />
+          </div>
           <button
             type="submit"
             disabled={submitting}

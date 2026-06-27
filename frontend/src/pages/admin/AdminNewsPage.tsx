@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getPosts, createPost, updatePost, deletePost } from '@/api/posts'
+import ImageUploadInput from '@/components/ImageUploadInput'
 import type { Post } from '@/types'
 
 const empty = { title: '', content: '', imageUrl: '' }
@@ -68,11 +69,10 @@ const AdminNewsPage = () => {
             placeholder="Title *"
             className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
           />
-          <input
+          <ImageUploadInput
+            label="Cover Image (optional)"
             value={form.imageUrl}
-            onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))}
-            placeholder="Image URL (optional)"
-            className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
+            onChange={url => setForm(f => ({ ...f, imageUrl: url }))}
           />
           <textarea
             value={form.content}

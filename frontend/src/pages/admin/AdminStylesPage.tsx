@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getTattooStyles, createTattooStyle, updateTattooStyle, deleteTattooStyle } from '@/api/tattooStyles'
+import ImageUploadInput from '@/components/ImageUploadInput'
 import type { TattooStyle } from '@/types'
 
 const empty = { name: '', description: '', imageUrl: '' }
@@ -68,12 +69,13 @@ const AdminStylesPage = () => {
             placeholder="Style Name *"
             className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
           />
-          <input
-            value={form.imageUrl}
-            onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))}
-            placeholder="Image URL (optional)"
-            className="bg-[#111] border border-[#1a1a1a] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
-          />
+          <div>
+            <ImageUploadInput
+              label="Image (optional)"
+              value={form.imageUrl}
+              onChange={url => setForm(f => ({ ...f, imageUrl: url }))}
+            />
+          </div>
           <textarea
             value={form.description}
             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}

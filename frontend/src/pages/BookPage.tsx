@@ -5,6 +5,7 @@ import { getTattooStyles } from '@/api/tattooStyles'
 import { createAppointment } from '@/api/appointments'
 import { createAppointmentSchema, type CreateAppointmentFields } from '@/schemas/appointment'
 import BookingCalendar from '@/components/BookingCalendar'
+import ImageUploadInput from '@/components/ImageUploadInput'
 import type { TattooStyle } from '@/types'
 
 const BookPage = () => {
@@ -109,16 +110,12 @@ const BookPage = () => {
           {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
         </div>
 
-        <div>
-          <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">Reference Image URL</label>
-          <input
-            {...register('referenceImageUrl')}
-            type="url"
-            placeholder="https://..."
-            className="w-full bg-[#111] border border-[#222] px-4 py-3 text-sm text-[#e5e5e5] focus:outline-none focus:border-[#c9a84c] transition-colors"
-          />
-          {errors.referenceImageUrl && <p className="text-red-400 text-xs mt-1">{errors.referenceImageUrl.message}</p>}
-        </div>
+        <ImageUploadInput
+          label="Reference Image"
+          value={watch('referenceImageUrl') ?? ''}
+          onChange={url => setValue('referenceImageUrl', url, { shouldValidate: true })}
+          error={errors.referenceImageUrl?.message}
+        />
 
         <div>
           <label className="block text-xs uppercase tracking-widest text-[#666] mb-2">
