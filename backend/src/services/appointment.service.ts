@@ -30,7 +30,9 @@ export const createAppointment = async (customerId: string, data: CreateAppointm
     const populated = await appointmentDao.findAppointmentById(String(created._id));
     if (!populated) throw new Error('Failed to create appointment');
     const dto = toAppointmentDTO(populated);
-    sendNewBookingEmailToAdmin(dto).catch(err => console.error('[mailer] new booking:', err.message));
+    sendNewBookingEmailToAdmin(dto)
+      .then(() => console.log('[mailer] new booking: sent'))
+      .catch(err => console.error('[mailer] new booking error:', err.message));
     return dto;
 };
 
