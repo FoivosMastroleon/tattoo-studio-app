@@ -30,7 +30,7 @@ export const createAppointment = async (customerId: string, data: CreateAppointm
     const populated = await appointmentDao.findAppointmentById(String(created._id));
     if (!populated) throw new Error('Failed to create appointment');
     const dto = toAppointmentDTO(populated);
-    sendNewBookingEmailToAdmin(dto).catch(() => {});
+    sendNewBookingEmailToAdmin(dto).catch(err => console.error('[mailer] new booking:', err.message));
     return dto;
 };
 
@@ -54,7 +54,7 @@ export const confirmAppointment = async (id: string) => {
 
     const updated = await appointmentDao.updateAppointmentById(id, { status: 'confirmed' });
     const dto = toAppointmentDTO(updated!);
-    sendConfirmationEmailToCustomer(dto).catch(() => {});
+    sendConfirmationEmailToCustomer(dto).catch(err => console.error('[mailer] confirmation:', err.message));
     return dto;
 };
 

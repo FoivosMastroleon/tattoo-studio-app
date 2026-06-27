@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 import * as appointmentService from '../services/appointment.service';
 import { createAppointmentSchema, updateAppointmentSchema } from '../validators/appointment.validator';
 import { AppError } from '../utils/AppError';
@@ -75,6 +76,27 @@ export const getBookedSlots = async (req: Request, res: Response, next: NextFunc
         res.json(slots);
     } catch (err) {
         next(new AppError(err instanceof Error ? err.message : 'Failed to fetch availability', 500));
+    }
+};
+
+export const confirmAppointmentViaEmail = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+    const page = (title: string, message: string) => `
+        <!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title></head>
+        <body style="margin:0;background:#0a0a0a;color:#e5e5e5;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh">
+          <div style="text-align:center">
+            <p style="color:#c9a84c;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;margin:0 0 16px">Ink & Soul</p>
+            <p style="font-size:18px;margin:0">${message}</p>
+          </div>
+        </body></html>`;
+    try {
+        const token = req.query.token as string;
+        if (!token) { res.send(page('Error', 'Invalid link.')); return; }
+
+        const payload = jwt.verify(token, process.env.JWT_SECRET || 'changeme') as { appointmentId: string };
+        await appointmentService.confirmAppointment(payload.appointmentId);
+        res.send(page('Confirmed', 'Appointment confirmed successfully.'));
+    } catch {
+        res.send(page('Error', 'Could not confirm — appointment may already be confirmed or link has expired.'));
     }
 };
 
