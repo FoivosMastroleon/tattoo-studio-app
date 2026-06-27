@@ -14,6 +14,8 @@ Full-stack web application for a tattoo studio, built as a final project for Cod
 
 **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, React Router, React Hook Form, Zod, Axios
 
+**Services:** Cloudinary (image uploads), Brevo (transactional email)
+
 ## Architecture
 
 The backend follows a layered architecture:
@@ -37,6 +39,9 @@ Routes → Controllers → Services → DAOs (Repository) → MongoDB
 - Role-based authorization (admin / artist / customer)
 - CRUD for Gallery, Posts, Tattoo Styles, Appointments
 - Appointment booking system with calendar
+- Image upload via Cloudinary (drag & drop or URL)
+- Email notifications via Brevo (new booking → admin, confirmation → customer)
+- One-click appointment confirm button in admin email
 - Admin dashboard
 - Rate limiting on auth endpoints (20 req / 15 min)
 - Security headers via Helmet
@@ -87,6 +92,12 @@ SALT_ROUNDS=10
 CORS_ORIGINS=http://localhost:5173
 GOOGLE_CLIENT_ID=your-google-oauth-client-id
 HF_API_KEY=your-huggingface-api-key
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+ADMIN_EMAIL=your-admin-email
+BREVO_API_KEY=your-brevo-api-key
+BACKEND_URL=http://localhost:5000
 ```
 
 Start the backend in development mode:
