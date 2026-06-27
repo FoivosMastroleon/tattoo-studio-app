@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { cancelAppointment, completeAppointment } from '@/api/appointments'
 import { useAppointments } from '@/hooks/useAppointments'
 import { useAuth } from '@/context/AuthProvider'
@@ -19,10 +19,21 @@ const MyAppointmentsPage = () => {
   const isArtist = role === 'artist' || role === 'admin'
   const [filter, setFilter] = useState('all')
 
-  const seenAtKey = `appt_seen_at_${user?.id ?? ''}`
-  const [seenAt] = useState<number>(() => parseInt(sessionStorage.getItem(seenAtKey) || '0'))
-  useEffect(() => { sessionStorage.setItem(seenAtKey, String(Date.now())) }, [seenAtKey])
-  const isNew = (updatedAt: string) => new Date(updatedAt).getTime() > seenAt
+  const seenKey = user?.id ? `appt_last_seen_${user.id}` : null
+  const [seenAt] = useState<number>(() => {
+    const stored = seenKey ? localStorage.getItem(seenKey) : null
+    return stored ? new Date(stored).getTime() : 0
+  })
+  const [seenIds, setSeenIds] = useState<Set<string>>(new Set())
+
+  const markSeen = (id: string) => {
+    if (seenIds.has(id)) return
+    setSeenIds(prev => new Set([...prev, id]))
+    window.dispatchEvent(new CustomEvent('appt-seen'))
+  }
+
+  const isNew = (apt: { id: string; updatedAt: string }) =>
+    new Date(apt.updatedAt).getTime() > seenAt && !seenIds.has(apt.id)
 
   const handleCancel = async (id: string) => {
     if (!confirm('Cancel this appointment?')) return
@@ -98,7 +109,7 @@ const MyAppointmentsPage = () => {
           ) : (
             <div className="flex flex-col gap-px bg-[#111]">
               {filtered.map(apt => (
-                <div key={apt.id} className={`bg-[#0a0a0a] p-5 border-l-2 ${isNew(apt.updatedAt) ? 'border-[#c9a84c]' : 'border-transparent'}`}>
+                <div key={apt.id} className={`bg-[#0a0a0a] p-5 border-l-2 transition-colors ${isNew(apt) ? 'border-[#c9a84c]' : 'border-transparent'}`} onMouseEnter={() => markSeen(apt.id)}>
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div className="flex-1 min-w-0">
                       <p className="font-display text-lg text-[#e5e5e5]">{apt.tattooStyle.name}</p>

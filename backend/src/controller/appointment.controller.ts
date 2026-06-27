@@ -55,7 +55,8 @@ export const cancelAppointment = async (req: Request<{ id: string }>, res: Respo
 
 export const getPendingCount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const count = await appointmentService.getPendingCount(req.user!.role, req.user!.userId);
+        const since = req.query.since ? new Date(req.query.since as string) : undefined;
+        const count = await appointmentService.getPendingCount(req.user!.role, req.user!.userId, since);
         res.json({ count });
     } catch (err) {
         next(new AppError(err instanceof Error ? err.message : 'Failed to fetch count', 500));

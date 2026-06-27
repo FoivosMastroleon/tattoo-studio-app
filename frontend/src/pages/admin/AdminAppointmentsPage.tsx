@@ -19,15 +19,24 @@ const AdminAppointmentsPage = () => {
   const [artists, setArtists] = useState<User[]>([])
   const [filter, setFilter] = useState('all')
 
-  const seenAtKey = `appt_seen_at_${user?.id ?? ''}`
-  const [seenAt] = useState<number>(() => parseInt(sessionStorage.getItem(seenAtKey) || '0'))
-  const isNew = (updatedAt: string) => new Date(updatedAt).getTime() > seenAt
+  const [seenAt] = useState<number>(() => {
+    const stored = user?.id ? localStorage.getItem(`appt_last_seen_${user.id}`) : null
+    return stored ? new Date(stored).getTime() : 0
+  })
+  const [seenIds, setSeenIds] = useState<Set<string>>(new Set())
+
+  const markSeen = (id: string) => {
+    if (seenIds.has(id)) return
+    setSeenIds(prev => new Set([...prev, id]))
+    window.dispatchEvent(new CustomEvent('appt-seen'))
+  }
+
+  const isNew = (apt: { id: string; updatedAt: string }) =>
+    new Date(apt.updatedAt).getTime() > seenAt && !seenIds.has(apt.id)
 
   useEffect(() => {
     getUsers().then(users => setArtists(users.filter(u => u.role === 'artist')))
   }, [])
-
-  useEffect(() => { sessionStorage.setItem(seenAtKey, String(Date.now())) }, [seenAtKey])
 
   const handle = async (fn: () => Promise<any>) => {
     const updated = await fn()
@@ -73,7 +82,7 @@ const AdminAppointmentsPage = () => {
       ) : (
         <div className="flex flex-col gap-px bg-[#111]">
           {filtered.map(apt => (
-            <div key={apt.id} className={`bg-[#0a0a0a] p-5 border-l-2 ${isNew(apt.updatedAt) ? 'border-[#c9a84c]' : 'border-transparent'}`}>
+            <div key={apt.id} className={`bg-[#0a0a0a] p-5 border-l-2 transition-colors ${isNew(apt) ? 'border-[#c9a84c]' : 'border-transparent'}`} onMouseEnter={() => markSeen(apt.id)}>
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <p className="text-[#e5e5e5] text-sm font-medium">{apt.customer.username}</p>

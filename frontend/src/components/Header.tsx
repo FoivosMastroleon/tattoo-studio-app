@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/AuthProvider'
 import Avatar from '@/components/Avatars'
@@ -10,23 +10,22 @@ const Header = () => {
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
-  const actualCountRef = useRef(0)
-  const seenKey = `appt_seen_${user?.id ?? ''}`
+  const seenKey = user?.id ? `appt_last_seen_${user.id}` : null
 
   useEffect(() => {
-    if (isAuthenticated) {
-      getPendingCount().then(r => {
-        actualCountRef.current = r.count
-        const seen = parseInt(sessionStorage.getItem(seenKey) || '0')
-        setPendingCount(Math.max(0, r.count - seen))
-      }).catch(() => {})
-    } else {
-      setPendingCount(0)
-    }
-  }, [isAuthenticated, role, location.pathname])
+    if (!isAuthenticated || !user?.id) { setPendingCount(0); return }
+    const since = seenKey ? (localStorage.getItem(seenKey) ?? undefined) : undefined
+    getPendingCount(since).then(r => setPendingCount(r.count)).catch(() => {})
+  }, [isAuthenticated, role, location.pathname, user?.id])
+
+  useEffect(() => {
+    const handler = () => setPendingCount(prev => Math.max(0, prev - 1))
+    window.addEventListener('appt-seen', handler)
+    return () => window.removeEventListener('appt-seen', handler)
+  }, [])
 
   const handleMarkSeen = () => {
-    sessionStorage.setItem(seenKey, String(actualCountRef.current))
+    if (seenKey) localStorage.setItem(seenKey, new Date().toISOString())
     setPendingCount(0)
   }
 

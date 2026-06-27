@@ -68,8 +68,8 @@ export const cancelAppointment = async (id: string, userId: string, role: string
     return toAppointmentDTO(updated!);
 };
 
-export const getPendingCount = async (role: string, userId: string) => {
-  return appointmentDao.countNotifications(role, userId)
+export const getPendingCount = async (role: string, userId: string, since?: Date) => {
+  return appointmentDao.countNotifications(role, userId, since)
 }
 
 export const getBookedSlotsByMonth = async (year: number, month: number) => {

@@ -22,13 +22,14 @@ export const updateAppointmentById = (id: string, data: Partial<IAppointment>) =
 export const deleteAppointmentById = (id: string) =>
   Appointment.findByIdAndDelete(id);
 
-export const countNotifications = (role: string, userId: string) => {
+export const countNotifications = (role: string, userId: string, since?: Date) => {
+  const sinceFilter = since ? { updatedAt: { $gt: since } } : {};
   if (role === 'admin') {
-    return Appointment.countDocuments({ status: { $in: ['pending', 'cancelled'] } })
+    return Appointment.countDocuments({ status: { $in: ['pending', 'cancelled'] }, ...sinceFilter });
   } else if (role === 'artist') {
-    return Appointment.countDocuments({ artist: userId, status: { $in: ['confirmed', 'cancelled'] } })
+    return Appointment.countDocuments({ artist: userId, status: { $in: ['confirmed', 'cancelled'] }, ...sinceFilter });
   } else {
-    return Appointment.countDocuments({ customer: userId, status: { $in: ['confirmed', 'cancelled'] } })
+    return Appointment.countDocuments({ customer: userId, status: { $in: ['confirmed', 'cancelled'] }, ...sinceFilter });
   }
 }
 
