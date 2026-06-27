@@ -16,6 +16,7 @@ const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('el-GR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
 export const sendNewBookingEmailToAdmin = async (apt: AppointmentDTO) => {
+  console.log('[mailer] env check:', { BREVO_USER: !!process.env.BREVO_USER, BREVO_PASS: !!process.env.BREVO_PASS, ADMIN_EMAIL: !!process.env.ADMIN_EMAIL })
   if (!process.env.BREVO_USER || !process.env.BREVO_PASS || !process.env.ADMIN_EMAIL) return
 
   const token = jwt.sign({ appointmentId: apt.id }, process.env.JWT_SECRET || 'changeme', { expiresIn: '7d' })
