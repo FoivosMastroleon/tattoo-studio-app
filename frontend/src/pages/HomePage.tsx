@@ -5,6 +5,15 @@ import { getPosts } from '@/api/posts'
 import { getTattooStyles } from '@/api/tattooStyles'
 import Carousel from '@/components/Carousel'
 import type { GalleryImage, Post, TattooStyle } from '@/types'
+import artist1 from '@/assets/artists/artist1.jpg'
+import artist2 from '@/assets/artists/artist2.jpg'
+import artist3 from '@/assets/artists/artist3.jpg'
+
+const artists = [
+  { name: 'Alex Moreau', role: 'Tattoo Artist', image: artist1, position: '75% 45%' },
+  { name: 'Nico Ferreira', role: 'Tattoo Artist', image: artist2, position: '40% 25%' },
+  { name: 'Dimitri Vance', role: 'Tattoo Artist', image: artist3, position: '50% 30%' },
+]
 
 const HomePage = () => {
   const [featured, setFeatured] = useState<GalleryImage[]>([])
@@ -47,6 +56,30 @@ const HomePage = () => {
           <p className="text-[#555] text-[10px] uppercase tracking-widest">25% off for registered users</p>
         </div>
 
+      </section>
+
+      <div className="border-t border-[#111]" />
+
+      {/* Artists */}
+      <section className="max-w-4xl mx-auto px-10 py-24">
+        <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Team</p>
+        <h2 className="font-display text-3xl text-center mb-16">Meet the Artists</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+          {artists.map(artist => (
+            <div key={artist.name} className="flex flex-col items-center text-center">
+              <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-[#c9a84c]/40 mb-5">
+                <img
+                  src={artist.image}
+                  alt={artist.name}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: artist.position }}
+                />
+              </div>
+              <p className="font-display text-lg text-[#e5e5e5] mb-1">{artist.name}</p>
+              <p className="text-[#555] text-xs uppercase tracking-widest">{artist.role}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <div className="border-t border-[#111]" />
