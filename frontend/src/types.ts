@@ -19,6 +19,15 @@ export type TattooStyle = {
 
 };
 
+export type TeamMember = {
+    id: string;
+    name: string;
+    role: string;
+    imageUrl?: string;
+    position?: string;
+    order: number;
+};
+
 export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
 export type Appointment = {

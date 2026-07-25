@@ -5,6 +5,7 @@ const LINKS = [
   { label: 'Gallery',      path: '/admin/gallery',      description: 'Manage images' },
   { label: 'News',         path: '/admin/news',         description: 'Studio updates' },
   { label: 'Styles',       path: '/admin/styles',       description: 'Tattoo styles' },
+  { label: 'Team',         path: '/admin/team',         description: 'Meet the artists' },
   { label: 'Users',        path: '/admin/users',        description: 'Manage accounts' },
 ]
 
@@ -14,7 +15,7 @@ const DashboardPage = () => {
       <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] mb-3">Admin Panel</p>
       <h1 className="font-display text-4xl text-[#e5e5e5] mb-12">Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-px bg-[#222]">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-px bg-[#222]">
         {LINKS.map(({ label, path, description }) => (
           <Link
             key={path}

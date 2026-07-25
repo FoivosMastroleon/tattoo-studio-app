@@ -13,6 +13,7 @@ import DashboardPage from '@/pages/admin/DashboardPage'
 import AdminGalleryPage from '@/pages/admin/AdminGalleryPage'
 import AdminNewsPage from '@/pages/admin/AdminNewsPage'
 import AdminStylesPage from '@/pages/admin/AdminStylesPage'
+import AdminTeamPage from '@/pages/admin/AdminTeamPage'
 import AdminUsersPage from '@/pages/admin/AdminUsersPage'
 import AdminAppointmentsPage from '@/pages/admin/AdminAppointmentsPage'
 import GeneratePage from '@/pages/GeneratePage'
@@ -43,6 +44,7 @@ function App() {
           <Route path="/admin/gallery" element={<AdminGalleryPage />} />
           <Route path="/admin/news" element={<AdminNewsPage />} />
           <Route path="/admin/styles" element={<AdminStylesPage />} />
+          <Route path="/admin/team" element={<AdminTeamPage />} />
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/appointments" element={<AdminAppointmentsPage />} />
         </Route>

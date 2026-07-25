@@ -14,6 +14,7 @@ import appointmentRoutes from './routes/appointment.routes';
 import galleryRoutes from './routes/galleryImage.routes';
 import postRoutes from './routes/post.routes';
 import styleRoutes from './routes/tattooStyle.routes';
+import teamRoutes from './routes/teamMember.routes';
 import uploadRoutes from './routes/upload.routes';
 
 const app = express();
@@ -51,6 +52,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/styles', styleRoutes);
+app.use('/api/team', teamRoutes);
 app.use('/api/upload', uploadRoutes);
 
 app.use(notFoundMiddleware);

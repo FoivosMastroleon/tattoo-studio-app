@@ -45,6 +45,17 @@ const options: swaggerJsdoc.Options = {
             imageUrl: { type: 'string', nullable: true },
           },
         },
+        TeamMember: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            role: { type: 'string' },
+            imageUrl: { type: 'string', nullable: true },
+            position: { type: 'string', nullable: true },
+            order: { type: 'number' },
+          },
+        },
         GalleryImage: {
           type: 'object',
           properties: {
@@ -377,6 +388,82 @@ const options: swaggerJsdoc.Options = {
         delete: {
           tags: ['Gallery'],
           summary: 'Delete gallery image (Admin only)',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          responses: {
+            204: { description: 'Deleted' },
+            404: { description: 'Not found' },
+          },
+        },
+      },
+
+      // ── TEAM ──────────────────────────────────────────────────────────────
+      '/team': {
+        get: {
+          tags: ['Team'],
+          summary: 'Get all team members (public)',
+          responses: {
+            200: { description: 'Team members list', content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/TeamMember' } } } } },
+          },
+        },
+        post: {
+          tags: ['Team'],
+          summary: 'Create team member (Admin only)',
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['name', 'role'],
+                  properties: {
+                    name: { type: 'string' },
+                    role: { type: 'string' },
+                    imageUrl: { type: 'string' },
+                    position: { type: 'string' },
+                    order: { type: 'number' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            201: { description: 'Created', content: { 'application/json': { schema: { $ref: '#/components/schemas/TeamMember' } } } },
+            403: { description: 'Forbidden' },
+          },
+        },
+      },
+      '/team/{id}': {
+        put: {
+          tags: ['Team'],
+          summary: 'Update team member (Admin only)',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          requestBody: {
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string' },
+                    role: { type: 'string' },
+                    imageUrl: { type: 'string' },
+                    position: { type: 'string' },
+                    order: { type: 'number' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: 'Updated', content: { 'application/json': { schema: { $ref: '#/components/schemas/TeamMember' } } } },
+            404: { description: 'Not found' },
+          },
+        },
+        delete: {
+          tags: ['Team'],
+          summary: 'Delete team member (Admin only)',
           security: [{ bearerAuth: [] }],
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
           responses: {

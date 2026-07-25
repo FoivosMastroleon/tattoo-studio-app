@@ -3,28 +3,22 @@ import { useEffect, useState } from 'react'
 import { getGalleryImages } from '@/api/galleryImage'
 import { getPosts } from '@/api/posts'
 import { getTattooStyles } from '@/api/tattooStyles'
+import { getTeamMembers } from '@/api/teamMembers'
 import Carousel from '@/components/Carousel'
-import type { GalleryImage, Post, TattooStyle } from '@/types'
-import artist1 from '@/assets/artists/artist1.jpg'
-import artist2 from '@/assets/artists/artist2.jpg'
-import artist3 from '@/assets/artists/artist3.jpg'
-
-const artists = [
-  { name: 'Alex Moreau', role: 'Tattoo Artist', image: artist1, position: '75% 45%' },
-  { name: 'Nico Ferreira', role: 'Tattoo Artist', image: artist2, position: '40% 25%' },
-  { name: 'Dimitri Vance', role: 'Tattoo Artist', image: artist3, position: '50% 30%' },
-]
+import type { GalleryImage, Post, TattooStyle, TeamMember } from '@/types'
 
 const HomePage = () => {
   const [featured, setFeatured] = useState<GalleryImage[]>([])
   const [latestPosts, setLatestPosts] = useState<Post[]>([])
   const [styles, setStyles] = useState<TattooStyle[]>([])
   const [selectedStyle, setSelectedStyle] = useState<TattooStyle | null>(null)
+  const [artists, setArtists] = useState<TeamMember[]>([])
 
   useEffect(() => {
     getGalleryImages().then(setFeatured).catch(() => {})
     getPosts().then(posts => setLatestPosts(posts.slice(0, 3))).catch(() => {})
     getTattooStyles().then(setStyles).catch(() => {})
+    getTeamMembers().then(setArtists).catch(() => {})
   }, [])
 
   return (
@@ -60,50 +54,56 @@ const HomePage = () => {
 
       <div className="border-t border-[#111]" />
 
-      {/* Artists */}
-      <section className="max-w-4xl mx-auto px-10 py-24">
-        <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Team</p>
-        <h2 className="font-display text-3xl text-center mb-16">Meet the Artists</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
-          {artists.map(artist => (
-            <div key={artist.name} className="flex flex-col items-center text-center">
-              <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-[#c9a84c]/40 mb-5">
-                <img
-                  src={artist.image}
-                  alt={artist.name}
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: artist.position }}
-                />
-              </div>
-              <p className="font-display text-lg text-[#e5e5e5] mb-1">{artist.name}</p>
-              <p className="text-[#555] text-xs uppercase tracking-widest">{artist.role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="border-t border-[#111]" />
-
       {/* Featured work */}
       {featured.length > 0 && (
-        <section className="max-w-6xl mx-auto px-10 py-24">
-          <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Work</p>
-          <h2 className="font-display text-3xl text-center mb-16">Featured Pieces</h2>
-          <Carousel>
-            {featured.map(img => (
-              <div key={img.id} className="aspect-square overflow-hidden group">
-                <img
-                  src={img.imageUrl}
-                  alt={img.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+        <>
+          <section className="max-w-6xl mx-auto px-10 py-24">
+            <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Work</p>
+            <h2 className="font-display text-3xl text-center mb-16">Featured Pieces</h2>
+            <Carousel>
+              {featured.map(img => (
+                <div key={img.id} className="aspect-square overflow-hidden group">
+                  <img
+                    src={img.imageUrl}
+                    alt={img.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+              ))}
+            </Carousel>
+            <div className="text-center mt-12">
+              <Link to="/gallery" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
+                View Full Gallery
+              </Link>
+            </div>
+          </section>
+
+          <div className="border-t border-[#111]" />
+        </>
+      )}
+
+      {/* Artists */}
+      {artists.length > 0 && (
+        <section className="max-w-4xl mx-auto px-10 py-24">
+          <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Team</p>
+          <h2 className="font-display text-3xl text-center mb-16">Meet the Artists</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+            {artists.map(artist => (
+              <div key={artist.id} className="flex flex-col items-center text-center">
+                <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-[#c9a84c]/40 mb-5 bg-[#111]">
+                  {artist.imageUrl && (
+                    <img
+                      src={artist.imageUrl}
+                      alt={artist.name}
+                      className="w-full h-full object-cover"
+                      style={{ objectPosition: artist.position || '50% 50%' }}
+                    />
+                  )}
+                </div>
+                <p className="font-display text-lg text-[#e5e5e5] mb-1">{artist.name}</p>
+                <p className="text-[#555] text-xs uppercase tracking-widest">{artist.role}</p>
               </div>
             ))}
-          </Carousel>
-          <div className="text-center mt-12">
-            <Link to="/gallery" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
-              View Full Gallery
-            </Link>
           </div>
         </section>
       )}
