@@ -82,32 +82,6 @@ const HomePage = () => {
         </>
       )}
 
-      {/* Artists */}
-      {artists.length > 0 && (
-        <section className="max-w-4xl mx-auto px-10 py-24">
-          <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Team</p>
-          <h2 className="font-display text-3xl text-center mb-16">Meet the Artists</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
-            {artists.map(artist => (
-              <div key={artist.id} className="flex flex-col items-center text-center">
-                <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-[#c9a84c]/40 mb-5 bg-[#111]">
-                  {artist.imageUrl && (
-                    <img
-                      src={artist.imageUrl}
-                      alt={artist.name}
-                      className="w-full h-full object-cover"
-                      style={{ objectPosition: artist.position || '50% 50%' }}
-                    />
-                  )}
-                </div>
-                <p className="font-display text-lg text-[#e5e5e5] mb-1">{artist.name}</p>
-                <p className="text-[#555] text-xs uppercase tracking-widest">{artist.role}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {styles.length > 0 && (
         <>
           <div className="border-t border-[#111]" />
@@ -136,6 +110,35 @@ const HomePage = () => {
               <Link to="/styles" className="text-xs uppercase tracking-widest text-[#c9a84c] border-b border-[#c9a84c]/40 pb-1 hover:border-[#c9a84c] transition-colors">
                 View All Styles
               </Link>
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* Artists */}
+      {artists.length > 0 && (
+        <>
+          <div className="border-t border-[#111]" />
+          <section className="max-w-4xl mx-auto px-10 py-24">
+            <p className="text-[#c9a84c] text-xs uppercase tracking-[0.4em] text-center mb-3">Our Team</p>
+            <h2 className="font-display text-3xl text-center mb-16">Meet the Artists</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+              {artists.map(artist => (
+                <div key={artist.id} className="flex flex-col items-center text-center">
+                  <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-[#c9a84c]/40 mb-5 bg-[#111]">
+                    {artist.imageUrl && (
+                      <img
+                        src={artist.imageUrl}
+                        alt={artist.name}
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: artist.position || '50% 50%' }}
+                      />
+                    )}
+                  </div>
+                  <p className="font-display text-lg text-[#e5e5e5] mb-1">{artist.name}</p>
+                  <p className="text-[#555] text-xs uppercase tracking-widest">{artist.role}</p>
+                </div>
+              ))}
             </div>
           </section>
         </>
